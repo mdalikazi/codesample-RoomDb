@@ -1,4 +1,4 @@
-package airtasker.cc.alikazi.com.cc_airtasker;
+package com.alikazi.cc_airtasker;
 
 import org.junit.Test;
 
