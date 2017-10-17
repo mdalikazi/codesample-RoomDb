@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CodeTest - Ali Kazi</string>
+
+    <string name="id_json">%1$.json</string>
 </resources>
