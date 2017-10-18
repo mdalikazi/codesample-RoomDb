@@ -17,4 +17,7 @@ public class NetConstants {
     public static final String QUERY_FEED = "feed.json";
     public static final String QUERY_TASK = "task";
     public static final String QUERY_PROFILE = "profile";
+
+    public static final String JSON_KEY_PROFILE_NAME = "{profileName}";
+    public static final String JSON_KEY_TASK_NAME = "{taskName}";
 }
