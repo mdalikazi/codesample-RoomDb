@@ -5,6 +5,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -27,15 +29,16 @@ public class MainActivity extends AppCompatActivity
     public static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
 
     // Logic
-    private NetworkProcessor mNetworkProcessor;
     private ArrayList<Feed> mFeed;
     private ArrayList<Task> mTasks;
     private ArrayList<Profile> mProfiles;
     private ArrayList<Integer> mTaskIds;
     private ArrayList<Integer> mProfileIds;
+    private FeedAdapter mFeedAdapter;
+    private NetworkProcessor mNetworkProcessor;
 
     // UI
-    private TextView mTextView;
+    private RecyclerView mRecyclerView;
     private TextView mEmptyListTextView;
     private ProgressBar mProgressBar;
     private FloatingActionButton mFab;
@@ -62,11 +65,17 @@ public class MainActivity extends AppCompatActivity
                 requestFeedFromServer(false);
             }
         });
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+
+        mFeedAdapter = new FeedAdapter(this);
+        mRecyclerView.setAdapter(mFeedAdapter);
     }
 
     private void initUi() {
         mFab = findViewById(R.id.main_fab);
-        mTextView = findViewById(R.id.main_text_view);
+        mRecyclerView = findViewById(R.id.main_recycler_view);
         mProgressBar = findViewById(R.id.main_progress_bar);
         mEmptyListTextView = findViewById(R.id.main_empty_list_message);
         mSwipeRefreshLayout = findViewById(R.id.main_swipe_refresh_layout);
@@ -199,6 +208,7 @@ public class MainActivity extends AppCompatActivity
         mProfiles = new ArrayList<>();
         mProfiles = profiles;
         processFeedWithTasksAndProfiles();
+        mFeedAdapter.setFeedList(mFeed);
     }
 
     @Override
