@@ -31,4 +31,8 @@ public class Feed {
     public String getEvent() {
         return event;
     }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 }

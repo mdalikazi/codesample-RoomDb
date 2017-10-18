@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.alikazi.cc_airtasker.conf.AppConf;
+import com.alikazi.cc_airtasker.conf.NetConstants;
 import com.alikazi.cc_airtasker.models.Feed;
 import com.alikazi.cc_airtasker.models.Profile;
 import com.alikazi.cc_airtasker.models.Task;
@@ -27,6 +28,11 @@ public class MainActivity extends AppCompatActivity
 
     // Logic
     private NetworkProcessor mNetworkProcessor;
+    private ArrayList<Feed> mFeed;
+    private ArrayList<Task> mTasks;
+    private ArrayList<Profile> mProfiles;
+    private ArrayList<Integer> mTaskIds;
+    private ArrayList<Integer> mProfileIds;
 
     // UI
     private TextView mTextView;
@@ -104,7 +110,7 @@ public class MainActivity extends AppCompatActivity
             mSnackbar.dismiss();
         }
         if (message != null && !message.isEmpty()) {
-            mSnackbar = Snackbar.make(mSwipeRefreshLayout, message, Snackbar.LENGTH_LONG);
+            mSnackbar = Snackbar.make(mSwipeRefreshLayout, message, Snackbar.LENGTH_INDEFINITE);
             mSnackbar.show();
         }
     }
@@ -115,7 +121,7 @@ public class MainActivity extends AppCompatActivity
             showHideProgressBar(showProgressBar);
             showHideSwipeRefreshing(!showProgressBar);
             showHideEmptyListMessage(false);
-            processSnackbar("Getting Feed...");
+            processSnackbar(getString(R.string.snackar_message_getting_feed));
             mNetworkProcessor.getFeed();
         }
     }
@@ -123,15 +129,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFeedRequestSuccess(ArrayList<Feed> feed) {
         Log.i(LOG_TAG, "onFeedRequestSuccess");
-        ArrayList<Integer> taskIds = new ArrayList<>();
-        ArrayList<Integer> profileIds = new ArrayList<>();
-        for (Feed feedItem : feed) {
-            taskIds.add(feedItem.getTask_id());
-            profileIds.add(feedItem.getProfile_id());
-        }
-
-        requestTasksFromServer(taskIds);
-        requestProfilesFromServer(profileIds);
+        mFeed = new ArrayList<>();
+        mFeed = feed;
+        processTaskAndProfileIds();
     }
 
     @Override
@@ -143,10 +143,23 @@ public class MainActivity extends AppCompatActivity
         processSnackbar(errorMessage);
     }
 
+    private void processTaskAndProfileIds() {
+        mTaskIds = new ArrayList<>();
+        mProfileIds = new ArrayList<>();
+        mTaskIds.clear();
+        mProfileIds.clear();
+        for (Feed feedItem : mFeed) {
+            mTaskIds.add(feedItem.getTask_id());
+            mProfileIds.add(feedItem.getProfile_id());
+        }
+
+        requestTasksFromServer(mTaskIds);
+    }
+
     private void requestTasksFromServer(ArrayList<Integer> taskIds) {
         Log.i(LOG_TAG, "requestFeedFromServer");
         if (mNetworkProcessor != null) {
-            processSnackbar("Processing Tasks...");
+            processSnackbar(getString(R.string.snackbar_message_processing_tasks));
             mNetworkProcessor.getTasks(taskIds);
         }
     }
@@ -154,6 +167,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onTasksRequestSuccess(ArrayList<Task> tasks) {
         Log.i(LOG_TAG, "onTasksRequestSuccess");
+        mTasks = new ArrayList<>();
+        mTasks = tasks;
+        requestProfilesFromServer(mProfileIds);
     }
 
     @Override
@@ -168,7 +184,7 @@ public class MainActivity extends AppCompatActivity
     private void requestProfilesFromServer(ArrayList<Integer> profileIds) {
         Log.i(LOG_TAG, "requestProfilesFromServer");
         if (mNetworkProcessor != null) {
-            processSnackbar("Processing Profiles...");
+            processSnackbar(getString(R.string.snackbar_message_processing_profiles));
             mNetworkProcessor.getProfiles(profileIds);
         }
     }
@@ -180,11 +196,9 @@ public class MainActivity extends AppCompatActivity
         showHideSwipeRefreshing(false);
         showHideEmptyListMessage(false);
         processSnackbar("");
-        if (mTextView != null) {
-            for (Profile profile : profiles) {
-                mTextView.append(profile.getFirst_name() + "\n");
-            }
-        }
+        mProfiles = new ArrayList<>();
+        mProfiles = profiles;
+        processFeedWithTasksAndProfiles();
     }
 
     @Override
@@ -194,5 +208,19 @@ public class MainActivity extends AppCompatActivity
         showHideSwipeRefreshing(false);
         showHideEmptyListMessage(true);
         processSnackbar(errorMessage);
+    }
+
+    private void processFeedWithTasksAndProfiles() {
+        for (int i = 0; i < mFeed.size(); i++) {
+            Feed feed = mFeed.get(i);
+            Task task = mTasks.get(i);
+            Profile profile = mProfiles.get(i);
+            if (feed.getTask_id() == task.getId() && feed.getProfile_id() == profile.getId()) {
+                String feedText = feed.getText();
+                feedText = feedText.replace(NetConstants.JSON_KEY_TASK_NAME, task.getName());
+                feedText = feedText.replace(NetConstants.JSON_KEY_PROFILE_NAME, profile.getFirst_name());
+                feed.setText(feedText);
+            }
+        }
     }
 }
