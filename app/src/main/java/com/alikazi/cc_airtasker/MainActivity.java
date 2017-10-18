@@ -103,8 +103,10 @@ public class MainActivity extends AppCompatActivity
         if (mSnackbar != null && mSnackbar.isShown()) {
             mSnackbar.dismiss();
         }
-        mSnackbar = Snackbar.make(mSwipeRefreshLayout, message, Snackbar.LENGTH_LONG);
-        mSnackbar.show();
+        if (message != null && !message.isEmpty()) {
+            mSnackbar = Snackbar.make(mSwipeRefreshLayout, message, Snackbar.LENGTH_LONG);
+            mSnackbar.show();
+        }
     }
 
     private void requestFeedFromServer(boolean showProgressBar) {
@@ -121,19 +123,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFeedRequestSuccess(ArrayList<Feed> feed) {
         Log.i(LOG_TAG, "onFeedRequestSuccess");
-        /*if (mTextView != null) {
-            for (Feed feedItem : feed) {
-                mTextView.append(feed.getText() + "\n");
-            }
-        }*/
         ArrayList<Integer> taskIds = new ArrayList<>();
         ArrayList<Integer> profileIds = new ArrayList<>();
         for (Feed feedItem : feed) {
             taskIds.add(feedItem.getTask_id());
             profileIds.add(feedItem.getProfile_id());
         }
+
         requestTasksFromServer(taskIds);
-//        requestProfilesFromServer(profileIds);
+        requestProfilesFromServer(profileIds);
     }
 
     @Override
@@ -156,11 +154,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onTasksRequestSuccess(ArrayList<Task> tasks) {
         Log.i(LOG_TAG, "onTasksRequestSuccess");
-        if (mTextView != null) {
-            for (Task task : tasks) {
-                mTextView.append(task.getName() + "\n");
-            }
-        }
     }
 
     @Override
@@ -174,18 +167,24 @@ public class MainActivity extends AppCompatActivity
 
     private void requestProfilesFromServer(ArrayList<Integer> profileIds) {
         Log.i(LOG_TAG, "requestProfilesFromServer");
-        showHideProgressBar(false);
-        showHideSwipeRefreshing(false);
-        showHideEmptyListMessage(false);
         if (mNetworkProcessor != null) {
             processSnackbar("Processing Profiles...");
-            mNetworkProcessor.getTasks(profileIds);
+            mNetworkProcessor.getProfiles(profileIds);
         }
     }
 
     @Override
     public void onProfilesRequestsSuccess(ArrayList<Profile> profiles) {
         Log.i(LOG_TAG, "onProfilesRequestsSuccess");
+        showHideProgressBar(false);
+        showHideSwipeRefreshing(false);
+        showHideEmptyListMessage(false);
+        processSnackbar("");
+        if (mTextView != null) {
+            for (Profile profile : profiles) {
+                mTextView.append(profile.getFirst_name() + "\n");
+            }
+        }
     }
 
     @Override

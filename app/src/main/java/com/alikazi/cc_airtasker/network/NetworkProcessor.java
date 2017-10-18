@@ -34,8 +34,6 @@ public class NetworkProcessor {
     private Uri.Builder mUriBuilder;
     private BufferedInputStream mBufferedInputStream;
     private InputStreamReader mInputStreamReader;
-    private ArrayList<URL> mTasksUrlList;
-    private ArrayList<URL> mProfilesUrlList;
     private FeedRequestListener mFeedRequestCallbacksListener;
     private TasksRequestListener mTasksRequestListener;
     private ProfileRequestListener mProfileRequestListener;
@@ -68,8 +66,7 @@ public class NetworkProcessor {
                 try {
                     URL url = new URL(mUriBuilder.build().toString());
                     HttpsURLConnection httpsURLConnection = connectionHelper.get(url);
-                    if (httpsURLConnection != null &&
-                            httpsURLConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+                    if (httpsURLConnection != null && httpsURLConnection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
                         mBufferedInputStream = new BufferedInputStream(httpsURLConnection.getInputStream());
                         mInputStreamReader = new InputStreamReader(mBufferedInputStream);
                         Gson gson = new Gson();
@@ -94,7 +91,6 @@ public class NetworkProcessor {
                 Log.i(LOG_TAG, "getFeed onPostExecute");
                 if (mFeedRequestCallbacksListener != null && feed != null) {
                     mFeedRequestCallbacksListener.onFeedRequestSuccess(feed);
-
                 } else {
                     mFeedRequestCallbacksListener.onFeedRequestFailure(mContext.getString(R.string.feed_response_error));
                 }
@@ -103,7 +99,7 @@ public class NetworkProcessor {
     }
 
     public void getTasks(final ArrayList<Integer> taskIds) {
-        mTasksUrlList = new ArrayList<>();
+        final ArrayList<URL> tasksUrlList = new ArrayList<>();
         new AsyncTask<Void, Void, ArrayList<Task>>() {
             @Override
             protected void onPreExecute() {
@@ -118,9 +114,12 @@ public class NetworkProcessor {
                             .appendPath(taskPath);
                     try {
                         URL taskUrl = new URL(uriBuilder.build().toString());
-                        mTasksUrlList.add(taskUrl);
+                        tasksUrlList.add(taskUrl);
                     } catch (Exception e) {
                         Log.d(LOG_TAG, "Exception building task URL: " + e.toString());
+                        if (mTasksRequestListener != null) {
+                            mTasksRequestListener.onTasksRequestFailure(mContext.getString(R.string.feed_response_error));
+                        }
                     }
                 }
             }
@@ -131,10 +130,9 @@ public class NetworkProcessor {
                 ArrayList<Task> tasks = new ArrayList<>();
                 ConnectionHelper connectionHelper = new ConnectionHelper();
                 try {
-                    for (URL taskUrl : mTasksUrlList) {
+                    for (URL taskUrl : tasksUrlList) {
                         HttpsURLConnection httpsURLConnection = connectionHelper.get(taskUrl);
-                        if (httpsURLConnection != null &&
-                                httpsURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        if (httpsURLConnection != null && httpsURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                             mBufferedInputStream = new BufferedInputStream(httpsURLConnection.getInputStream());
                             mInputStreamReader = new InputStreamReader(mBufferedInputStream);
                             Gson gson = new Gson();
@@ -142,8 +140,13 @@ public class NetworkProcessor {
                             tasks.add(task);
                         }
                     }
+                    mBufferedInputStream.close();
+                    mInputStreamReader.close();
                 } catch (Exception e) {
                     Log.d(LOG_TAG, "Exception with Tasks doInBackground: " + e.toString());
+                    if (mTasksRequestListener != null) {
+                        mTasksRequestListener.onTasksRequestFailure(mContext.getString(R.string.feed_response_error));
+                    }
                 }
                 return tasks;
             }
@@ -161,8 +164,69 @@ public class NetworkProcessor {
 
     }
 
-    public void getProfiles() {
+    public void getProfiles(final ArrayList<Integer> profileIds) {
+        final ArrayList<URL> profilesUrlList = new ArrayList<>();
+        new AsyncTask<Void, Void, ArrayList<Profile>>() {
+            @Override
+            protected void onPreExecute() {
+                Log.i(LOG_TAG, "getProfiles onPreExecute");
+                for (int profileId : profileIds) {
+                    String profilePath = mContext.getString(R.string.id_json, profileId);
+                    Uri.Builder uriBuilder = new Uri.Builder()
+                            .scheme(NetConstants.SCHEME_HTTPS)
+                            .authority(NetConstants.STAGE_AIRTASKER)
+                            .appendPath(NetConstants.ANDROID_CODE_TEST)
+                            .appendPath(NetConstants.QUERY_PROFILE)
+                            .appendPath(profilePath);
+                    try {
+                        URL profileUrl = new URL(uriBuilder.build().toString());
+                        profilesUrlList.add(profileUrl);
+                    } catch (Exception e) {
+                        Log.d(LOG_TAG, "Exception building profile URL: " + e.toString());
+                        if (mProfileRequestListener != null) {
+                            mProfileRequestListener.onProfilesRequestFailure(mContext.getString(R.string.feed_response_error));
+                        }
+                    }
+                }
+            }
 
+            @Override
+            protected ArrayList<Profile> doInBackground(Void... voids) {
+                Log.i(LOG_TAG, "getProfiles doInBackground");
+                ArrayList<Profile> profiles = new ArrayList<>();
+                ConnectionHelper connectionHelper = new ConnectionHelper();
+                try {
+                    for (URL profileUrl : profilesUrlList) {
+                        HttpsURLConnection httpsURLConnection = connectionHelper.get(profileUrl);
+                        if (httpsURLConnection != null && httpsURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                            mBufferedInputStream = new BufferedInputStream(httpsURLConnection.getInputStream());
+                            mInputStreamReader = new InputStreamReader(mBufferedInputStream);
+                            Gson gson = new Gson();
+                            Profile profile = gson.fromJson(mInputStreamReader, Profile.class);
+                            profiles.add(profile);
+                        }
+                    }
+                    mBufferedInputStream.close();
+                    mInputStreamReader.close();
+                } catch (Exception e) {
+                    Log.d(LOG_TAG, "Exception with getProfiles doInBackground: " + e.toString());
+                    if (mProfileRequestListener != null) {
+                        mProfileRequestListener.onProfilesRequestFailure(mContext.getString(R.string.feed_response_error));
+                    }
+                }
+                return profiles;
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<Profile> profiles) {
+                Log.i(LOG_TAG, "getProfiles onPostExecute");
+                if (mProfileRequestListener != null && profiles != null) {
+                    mProfileRequestListener.onProfilesRequestsSuccess(profiles);
+                } else {
+                    mProfileRequestListener.onProfilesRequestFailure(mContext.getString(R.string.feed_response_error));
+                }
+            }
+        }.execute();
     }
 
     public interface FeedRequestListener {
@@ -182,6 +246,4 @@ public class NetworkProcessor {
 
         void onProfilesRequestFailure(String errorMessage);
     }
-
-
 }
