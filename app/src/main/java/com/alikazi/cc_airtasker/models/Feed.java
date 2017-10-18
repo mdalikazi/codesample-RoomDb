@@ -31,24 +31,4 @@ public class Feed {
     public String getEvent() {
         return event;
     }
-
-    public void setTask_id(int task_id) {
-        this.task_id = task_id;
-    }
-
-    public void setProfile_id(int profile_id) {
-        this.profile_id = profile_id;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
-    }
-
-    public void setEvent(String event) {
-        this.event = event;
-    }
 }

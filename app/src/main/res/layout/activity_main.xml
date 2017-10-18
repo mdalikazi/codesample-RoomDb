@@ -4,11 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.alikazi.cc_airtasker.MainActivity">
+    tools:context="com.alikazi.cc_airtasker.MainActivity">\
 
-    <TextView
+    <include layout="@layout/content_main" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/main_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"/>
+        android:layout_margin="16dp"
+        android:layout_gravity="bottom|end"
+        android:src="@mipmap/ic_http_white_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

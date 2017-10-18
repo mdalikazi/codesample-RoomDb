@@ -23,7 +23,7 @@ public class ConnectionHelper {
         super();
     }
 
-    private HttpsURLConnection get(URL url) {
+    public HttpsURLConnection get(URL url) {
         Log.i(LOG_TAG, "Trying to get: " + url.toString());
         try {
             mHttpsURLConnection = (HttpsURLConnection) url.openConnection();
@@ -34,16 +34,12 @@ public class ConnectionHelper {
             mHttpsURLConnection.connect();
         } catch (Exception e) {
             Log.d(LOG_TAG, "Exception with get: " + e.toString());
-        } finally {
-            if (mHttpsURLConnection != null) {
-                mHttpsURLConnection.disconnect();
-            }
         }
 
         return mHttpsURLConnection;
     }
 
-    private HttpsURLConnection post(URL url) {
+    public HttpsURLConnection post(URL url) {
         Log.i(LOG_TAG, "Trying to post: " + url.toString());
         try {
             mHttpsURLConnection = (HttpsURLConnection) url.openConnection();
@@ -54,10 +50,6 @@ public class ConnectionHelper {
             mHttpsURLConnection.connect();
         } catch (Exception e) {
             Log.d(LOG_TAG, "Exception with post: " + e.toString());
-        } finally {
-            if (mHttpsURLConnection != null) {
-                mHttpsURLConnection.disconnect();
-            }
         }
 
         return mHttpsURLConnection;
