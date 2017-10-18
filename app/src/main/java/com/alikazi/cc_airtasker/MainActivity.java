@@ -12,11 +12,16 @@ import android.widget.TextView;
 
 import com.alikazi.cc_airtasker.conf.AppConf;
 import com.alikazi.cc_airtasker.models.Feed;
+import com.alikazi.cc_airtasker.models.Profile;
+import com.alikazi.cc_airtasker.models.Task;
 import com.alikazi.cc_airtasker.network.NetworkProcessor;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements NetworkProcessor.FeedRequestListener {
+public class MainActivity extends AppCompatActivity
+        implements NetworkProcessor.FeedRequestListener,
+        NetworkProcessor.TasksRequestListener,
+        NetworkProcessor.ProfileRequestListener {
 
     public static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
 
@@ -37,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements NetworkProcessor.
         setContentView(R.layout.activity_main);
 
         initUi();
-        mNetworkProcessor = new NetworkProcessor(this, this);
+        mNetworkProcessor = new NetworkProcessor(this, this,this, this);
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,16 +81,6 @@ public class MainActivity extends AppCompatActivity implements NetworkProcessor.
         super.onStop();
     }
 
-    private void requestFeedFromServer(boolean showProgressBar) {
-        Log.i(LOG_TAG, "requestFeedFromServer");
-        if (mNetworkProcessor != null) {
-            showHideProgressBar(showProgressBar);
-            showHideSwipeRefreshing(!showProgressBar);
-            showHideEmptyListMessage(false);
-            mNetworkProcessor.getFeed();
-        }
-    }
-
     private void showHideEmptyListMessage(boolean show) {
         if (mEmptyListTextView != null) {
             mEmptyListTextView.setVisibility(show ? View.VISIBLE : View.GONE);
@@ -104,17 +99,41 @@ public class MainActivity extends AppCompatActivity implements NetworkProcessor.
         }
     }
 
+    private void processSnackbar(String message) {
+        if (mSnackbar != null && mSnackbar.isShown()) {
+            mSnackbar.dismiss();
+        }
+        mSnackbar = Snackbar.make(mSwipeRefreshLayout, message, Snackbar.LENGTH_LONG);
+        mSnackbar.show();
+    }
+
+    private void requestFeedFromServer(boolean showProgressBar) {
+        Log.i(LOG_TAG, "requestFeedFromServer");
+        if (mNetworkProcessor != null) {
+            showHideProgressBar(showProgressBar);
+            showHideSwipeRefreshing(!showProgressBar);
+            showHideEmptyListMessage(false);
+            processSnackbar("Getting Feed...");
+            mNetworkProcessor.getFeed();
+        }
+    }
+
     @Override
-    public void onFeedRequestSuccess(ArrayList<Feed> feeds) {
+    public void onFeedRequestSuccess(ArrayList<Feed> feed) {
         Log.i(LOG_TAG, "onFeedRequestSuccess");
-        showHideProgressBar(false);
-        showHideSwipeRefreshing(false);
-        showHideEmptyListMessage(false);
-        if (mTextView != null) {
-            for (Feed feed : feeds) {
+        /*if (mTextView != null) {
+            for (Feed feedItem : feed) {
                 mTextView.append(feed.getText() + "\n");
             }
+        }*/
+        ArrayList<Integer> taskIds = new ArrayList<>();
+        ArrayList<Integer> profileIds = new ArrayList<>();
+        for (Feed feedItem : feed) {
+            taskIds.add(feedItem.getTask_id());
+            profileIds.add(feedItem.getProfile_id());
         }
+        requestTasksFromServer(taskIds);
+//        requestProfilesFromServer(profileIds);
     }
 
     @Override
@@ -123,12 +142,58 @@ public class MainActivity extends AppCompatActivity implements NetworkProcessor.
         showHideProgressBar(false);
         showHideSwipeRefreshing(false);
         showHideEmptyListMessage(true);
-        mSnackbar = Snackbar.make(mSwipeRefreshLayout, errorMessage, Snackbar.LENGTH_LONG)
-                .setAction(R.string.snackbar_ok, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mSnackbar.dismiss();
+        processSnackbar(errorMessage);
+    }
+
+    private void requestTasksFromServer(ArrayList<Integer> taskIds) {
+        Log.i(LOG_TAG, "requestFeedFromServer");
+        if (mNetworkProcessor != null) {
+            processSnackbar("Processing Tasks...");
+            mNetworkProcessor.getTasks(taskIds);
+        }
+    }
+
+    @Override
+    public void onTasksRequestSuccess(ArrayList<Task> tasks) {
+        Log.i(LOG_TAG, "onTasksRequestSuccess");
+        if (mTextView != null) {
+            for (Task task : tasks) {
+                mTextView.append(task.getName() + "\n");
             }
-        });
+        }
+    }
+
+    @Override
+    public void onTasksRequestFailure(String errorMessage) {
+        Log.i(LOG_TAG, "onTasksRequestFailure");
+        showHideProgressBar(false);
+        showHideSwipeRefreshing(false);
+        showHideEmptyListMessage(true);
+        processSnackbar(errorMessage);
+    }
+
+    private void requestProfilesFromServer(ArrayList<Integer> profileIds) {
+        Log.i(LOG_TAG, "requestProfilesFromServer");
+        showHideProgressBar(false);
+        showHideSwipeRefreshing(false);
+        showHideEmptyListMessage(false);
+        if (mNetworkProcessor != null) {
+            processSnackbar("Processing Profiles...");
+            mNetworkProcessor.getTasks(profileIds);
+        }
+    }
+
+    @Override
+    public void onProfilesRequestsSuccess(ArrayList<Profile> profiles) {
+        Log.i(LOG_TAG, "onProfilesRequestsSuccess");
+    }
+
+    @Override
+    public void onProfilesRequestFailure(String errorMessage) {
+        Log.i(LOG_TAG, "onProfilesRequestFailure");
+        showHideProgressBar(false);
+        showHideSwipeRefreshing(false);
+        showHideEmptyListMessage(true);
+        processSnackbar(errorMessage);
     }
 }

@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">CodeTest - Ali Kazi</string>
 
-    <string name="id_json">%1$.json</string>
-    <string name="feed_response_error">There was an error getting feed!</string>
+    <string name="id_json">%1$d.json</string>
+    <string name="feed_response_error">There was an error getting the feed!</string>
     <string name="main_empty_list_message">Someone forgot to feed the feed!</string>
     <string name="snackbar_ok">OK</string>
 
