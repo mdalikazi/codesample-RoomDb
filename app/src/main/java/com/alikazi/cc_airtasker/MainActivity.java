@@ -25,6 +25,7 @@ import com.alikazi.cc_airtasker.network.NetworkProcessor;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
@@ -45,8 +46,8 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<Feed> mFeed;
     private ArrayList<Task> mTasks;
     private ArrayList<Profile> mProfiles;
-    private ArrayList<Integer> mTaskIds;
-    private ArrayList<Integer> mProfileIds;
+    private LinkedHashSet<Integer> mTaskIds;
+    private LinkedHashSet<Integer> mProfileIds;
     private FeedAdapter mFeedAdapter;
     private NetworkProcessor mNetworkProcessor;
 
@@ -210,8 +211,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void processTaskAndProfileIds() {
-        mTaskIds = new ArrayList<>();
-        mProfileIds = new ArrayList<>();
+        mTaskIds = new LinkedHashSet<>();
+        mProfileIds = new LinkedHashSet<>();
         mTaskIds.clear();
         mProfileIds.clear();
         for (Feed feedItem : mFeed) {
@@ -222,7 +223,7 @@ public class MainActivity extends AppCompatActivity
         requestTasksFromServer(mTaskIds);
     }
 
-    private void requestTasksFromServer(ArrayList<Integer> taskIds) {
+    private void requestTasksFromServer(LinkedHashSet<Integer> taskIds) {
         Log.i(LOG_TAG, "requestFeedFromServer");
         if (mNetworkProcessor != null) {
             processSnackbar(SNACKBAR_TASKS);
@@ -244,7 +245,7 @@ public class MainActivity extends AppCompatActivity
         processDefaultRequestFailure();
     }
 
-    private void requestProfilesFromServer(ArrayList<Integer> profileIds) {
+    private void requestProfilesFromServer(LinkedHashSet<Integer> profileIds) {
         Log.i(LOG_TAG, "requestProfilesFromServer");
         if (mNetworkProcessor != null) {
             processSnackbar(SNACKBAR_PROFILE);
@@ -285,31 +286,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void processFeedWithTasksAndProfiles() {
-        for (int i = 0; i < mFeed.size(); i++) {
-            Feed feed = mFeed.get(i);
-            Task task = mTasks.get(i);
-            Profile profile = mProfiles.get(i);
-            if (feed.getTask_id() == task.getId() && feed.getProfile_id() == profile.getId()) {
-
-                // Replace {task_name} and {profile_name} with data from task and profile
-                String feedText = feed.getText();
-                feedText = feedText.replace(NetConstants.JSON_KEY_TASK_NAME, task.getName());
-                feedText = feedText.replace(NetConstants.JSON_KEY_PROFILE_NAME, profile.getFirst_name());
-                feed.setProcessedText(feedText);
-
-                // Set transient task and profile objects on feed
-                feed.setTask(task);
-                feed.setProfile(profile);
-            }
-
-            // Convert mini url of profile photo to full url
-            Uri.Builder uriBuilder = new Uri.Builder()
-                    .scheme(NetConstants.SCHEME_HTTPS)
-                    .authority(NetConstants.STAGE_AIRTASKER)
-                    .appendPath(NetConstants.ANDROID_CODE_TEST);
-            String imageUrl = uriBuilder.build().toString() + feed.getProfile().getAvatar_mini_url();
-            feed.getProfile().setAvatarFullUrl(imageUrl);
-
+        for (Feed feed : mFeed) {
             // Convert ISO date to Java date
             try {
                 SimpleDateFormat isoDateFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_ISO, Locale.US);
@@ -317,6 +294,41 @@ public class MainActivity extends AppCompatActivity
                 feed.setCreatedAtJavaDate(javaDate);
             } catch (Exception e) {
                 Log.d(LOG_TAG, "Exception parsing iso date: " + e.toString());
+            }
+
+            for (Task task : mTasks){
+                if (feed.getTask_id() == task.getId()) {
+
+                    // Replace {task_name} with data from task object
+                    String feedText = feed.getText();
+                    feedText = feedText.replace(NetConstants.JSON_KEY_TASK_NAME, task.getName());
+                    feed.setProcessedText(feedText);
+
+                    // Set transient task object on feed
+                    feed.setTask(task);
+                }
+            }
+
+            for (Profile profile : mProfiles) {
+
+                // Convert mini url of profile photo to full url
+                Uri.Builder uriBuilder = new Uri.Builder()
+                        .scheme(NetConstants.SCHEME_HTTPS)
+                        .authority(NetConstants.STAGE_AIRTASKER)
+                        .appendPath(NetConstants.ANDROID_CODE_TEST);
+                String imageUrl = uriBuilder.build().toString() + profile.getAvatar_mini_url();
+                profile.setAvatarFullUrl(imageUrl);
+
+                if (feed.getProfile_id() == profile.getId()) {
+
+                    // Replace {profile_name} with data from profile object
+                    String feedText = feed.getProcessedText();
+                    feedText = feedText.replace(NetConstants.JSON_KEY_PROFILE_NAME, profile.getFirst_name());
+                    feed.setProcessedText(feedText);
+
+                    // Set transient profile object on feed
+                    feed.setProfile(profile);
+                }
             }
         }
     }

@@ -19,6 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -101,7 +102,7 @@ public class NetworkProcessor {
         }.execute();
     }
 
-    public void getTasks(final ArrayList<Integer> taskIds) {
+    public void getTasks(final LinkedHashSet<Integer> taskIds) {
         final ArrayList<URL> tasksUrlList = new ArrayList<>();
         new AsyncTask<Void, Void, ArrayList<Task>>() {
             @Override
@@ -169,10 +170,9 @@ public class NetworkProcessor {
                 }
             }
         }.execute();
-
     }
 
-    public void getProfiles(final ArrayList<Integer> profileIds) {
+    public void getProfiles(final LinkedHashSet<Integer> profileIds) {
         final ArrayList<URL> profilesUrlList = new ArrayList<>();
         new AsyncTask<Void, Void, ArrayList<Profile>>() {
             @Override
