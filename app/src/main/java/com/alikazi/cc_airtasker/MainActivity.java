@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity
 
         mFeedAdapter = new FeedAdapter(this);
         mRecyclerView.setAdapter(mFeedAdapter);
+        setupRecyclerScrollListener();
     }
 
     private void initUi() {
@@ -122,6 +123,19 @@ public class MainActivity extends AppCompatActivity
             mSnackbar = Snackbar.make(mSwipeRefreshLayout, message, Snackbar.LENGTH_INDEFINITE);
             mSnackbar.show();
         }
+    }
+
+    private void setupRecyclerScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 && mFab.isShown()) {
+                    mFab.hide();
+                } else {
+                    mFab.show();
+                }
+            }
+        });
     }
 
     private void requestFeedFromServer(boolean showProgressBar) {

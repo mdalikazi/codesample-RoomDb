@@ -87,7 +87,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_DAY_TIME, Locale.US);
                 listItemViewHolder.dateTextView.setText(simpleDateFormat.format(date));
                 break;
-
+                //TODO CHECK IF DATE AND IMAGE URL CAN BE PARSED IN MODEL
+                //TODO ADD COMMENTS
+                //TODO ARCH COMPONENTS
+                //TODO HIDE FAB
         }
     }
 
