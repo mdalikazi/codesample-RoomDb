@@ -8,7 +8,7 @@ public class NetConstants {
 
     public static final String REQUEST_METHOD_GET = "GET";
     public static final String REQUEST_METHOD_POST = "POST";
-    public static final int REQUEST_TIMEOUT = 20 * 1000;
+    public static final int REQUEST_TIMEOUT = 10 * 1000;
 
     public static final String SCHEME_HTTPS = "https";
     public static final String STAGE_AIRTASKER = "stage.airtasker.com";

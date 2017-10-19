@@ -2,10 +2,14 @@
     <string name="app_name">CodeTest - Ali Kazi</string>
 
     <string name="id_json">%1$d.json</string>
-    <string name="feed_response_error">There was an error getting the feed! Please try again.</string>
-    <string name="main_empty_list_message">Someone forgot to feed the feed!</string>
+    <string name="main_empty_list_message">Someone forgot to feed the feed! \nTry tapping the "\"HTTP"\" button.</string>
     <string name="snackbar_action_ok">OK</string>
-    <string name="snackar_message_getting_feed">Getting Feed...</string>
+    <string name="snackbar_message_feed_response_error">There was an error getting the feed!</string>
+    <string name="snackbar_message_done">Done!</string>
+    <string name="snackbar_message_getting_feed">Getting Feed...</string>
     <string name="snackbar_message_processing_tasks">Processing Tasks...</string>
     <string name="snackbar_message_processing_profiles">Processing Profiles...</string>
+    <string name="snackbar_message_no_internet">Seems your internet is AWOL!</string>
+    <string name="default_image_content_description">Image</string>
+
 </resources>
