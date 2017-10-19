@@ -6,6 +6,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,6 +32,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_TYPE_ITEM = 0;
 
     private Context mContext;
+    private boolean mAnimate;
     private ArrayList<Feed> mFeedList;
 
     public FeedAdapter(Context context) {
@@ -37,6 +41,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void setFeedList(ArrayList<Feed> feedList) {
         Log.i(LOG_TAG, "setFeedList");
+        mAnimate = true;
         mFeedList = new ArrayList<>();
         mFeedList.clear();
         mFeedList = feedList;
@@ -57,6 +62,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        animateList(holder.itemView);
         int adapterPostion = holder.getAdapterPosition();
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_ITEM:
@@ -98,6 +104,32 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         throw new RuntimeException("There are invalid view types in FeedAdapter!");
+    }
+
+    private void animateList(View view) {
+        if (!mAnimate) {
+            return;
+        }
+        TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, 500, 0);
+        translateAnimation.setInterpolator(new DecelerateInterpolator());
+        translateAnimation.setDuration(500);
+        translateAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mAnimate = false;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        view.startAnimation(translateAnimation);
     }
 
     private class FeedListItemViewHolder extends RecyclerView.ViewHolder {

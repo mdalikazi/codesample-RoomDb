@@ -120,14 +120,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void processSnackbar(String message) {
-//        if (mSnackbar != null && mSnackbar.isShown()) {
-        if (message.isEmpty()) {
-            mSnackbar.setDuration(Snackbar.LENGTH_LONG);
-            mSnackbar.dismiss();
+        if (message == null) {
+            return;
         }
-        if (message != null && !message.isEmpty()) {
-            mSnackbar = Snackbar.make(mSwipeRefreshLayout, message, Snackbar.LENGTH_INDEFINITE);
+        if (!message.isEmpty()) {
+            if (mSnackbar == null) {
+                mSnackbar = Snackbar.make(mSwipeRefreshLayout, "", Snackbar.LENGTH_INDEFINITE);
+            }
+            mSnackbar.setText(message);
             mSnackbar.show();
+        } else {
+            mSnackbar.setDuration(Snackbar.LENGTH_LONG);
         }
     }
 
