@@ -72,14 +72,17 @@ public class NetworkProcessor {
                         Gson gson = new Gson();
                         Feed[] feed = gson.fromJson(mInputStreamReader, Feed[].class);
                         feeds = new ArrayList<>(Arrays.asList(feed));
-                        mInputStreamReader.close();
-                        mBufferedInputStream.close();
-                        httpsURLConnection.disconnect();
+                        if (mInputStreamReader != null) {
+                            mInputStreamReader.close();
+                        }
+                        if (mBufferedInputStream != null) {
+                            mBufferedInputStream.close();
+                        }
                     }
                 } catch (Exception e) {
                     Log.d(LOG_TAG, "Exception with Feeds doInBackground: " + e.toString());
                     if (mFeedRequestCallbacksListener != null) {
-                        mFeedRequestCallbacksListener.onFeedRequestFailure(mContext.getString(R.string.feed_response_error));
+                        mFeedRequestCallbacksListener.onFeedRequestFailure();
                     }
                 }
 
@@ -89,10 +92,10 @@ public class NetworkProcessor {
             @Override
             protected void onPostExecute(ArrayList<Feed> feed) {
                 Log.i(LOG_TAG, "getFeed onPostExecute");
-                if (mFeedRequestCallbacksListener != null && feed != null) {
+                if (mFeedRequestCallbacksListener != null && feed != null && !feed.isEmpty()) {
                     mFeedRequestCallbacksListener.onFeedRequestSuccess(feed);
                 } else {
-                    mFeedRequestCallbacksListener.onFeedRequestFailure(mContext.getString(R.string.feed_response_error));
+                    mFeedRequestCallbacksListener.onFeedRequestFailure();
                 }
             }
         }.execute();
@@ -118,7 +121,7 @@ public class NetworkProcessor {
                     } catch (Exception e) {
                         Log.d(LOG_TAG, "Exception building task URL: " + e.toString());
                         if (mTasksRequestListener != null) {
-                            mTasksRequestListener.onTasksRequestFailure(mContext.getString(R.string.feed_response_error));
+                            mTasksRequestListener.onTasksRequestFailure();
                         }
                     }
                 }
@@ -140,12 +143,16 @@ public class NetworkProcessor {
                             tasks.add(task);
                         }
                     }
-                    mBufferedInputStream.close();
-                    mInputStreamReader.close();
+                    if (mInputStreamReader != null) {
+                        mInputStreamReader.close();
+                    }
+                    if (mBufferedInputStream != null) {
+                        mBufferedInputStream.close();
+                    }
                 } catch (Exception e) {
                     Log.d(LOG_TAG, "Exception with Tasks doInBackground: " + e.toString());
                     if (mTasksRequestListener != null) {
-                        mTasksRequestListener.onTasksRequestFailure(mContext.getString(R.string.feed_response_error));
+                        mTasksRequestListener.onTasksRequestFailure();
                     }
                 }
                 return tasks;
@@ -154,10 +161,10 @@ public class NetworkProcessor {
             @Override
             protected void onPostExecute(ArrayList<Task> tasks) {
                 Log.i(LOG_TAG, "getTasks onPostExecute");
-                if (mTasksRequestListener != null && tasks != null) {
+                if (mTasksRequestListener != null && tasks != null && !tasks.isEmpty()) {
                     mTasksRequestListener.onTasksRequestSuccess(tasks);
                 } else {
-                    mTasksRequestListener.onTasksRequestFailure(mContext.getString(R.string.feed_response_error));
+                    mTasksRequestListener.onTasksRequestFailure();
                 }
             }
         }.execute();
@@ -184,7 +191,7 @@ public class NetworkProcessor {
                     } catch (Exception e) {
                         Log.d(LOG_TAG, "Exception building profile URL: " + e.toString());
                         if (mProfileRequestListener != null) {
-                            mProfileRequestListener.onProfilesRequestFailure(mContext.getString(R.string.feed_response_error));
+                            mProfileRequestListener.onProfilesRequestFailure();
                         }
                     }
                 }
@@ -206,12 +213,16 @@ public class NetworkProcessor {
                             profiles.add(profile);
                         }
                     }
-                    mBufferedInputStream.close();
-                    mInputStreamReader.close();
+                    if (mInputStreamReader != null) {
+                        mInputStreamReader.close();
+                    }
+                    if (mBufferedInputStream != null) {
+                        mBufferedInputStream.close();
+                    }
                 } catch (Exception e) {
                     Log.d(LOG_TAG, "Exception with getProfiles doInBackground: " + e.toString());
                     if (mProfileRequestListener != null) {
-                        mProfileRequestListener.onProfilesRequestFailure(mContext.getString(R.string.feed_response_error));
+                        mProfileRequestListener.onProfilesRequestFailure();
                     }
                 }
                 return profiles;
@@ -220,10 +231,10 @@ public class NetworkProcessor {
             @Override
             protected void onPostExecute(ArrayList<Profile> profiles) {
                 Log.i(LOG_TAG, "getProfiles onPostExecute");
-                if (mProfileRequestListener != null && profiles != null) {
+                if (mProfileRequestListener != null && profiles != null && !profiles.isEmpty()) {
                     mProfileRequestListener.onProfilesRequestsSuccess(profiles);
                 } else {
-                    mProfileRequestListener.onProfilesRequestFailure(mContext.getString(R.string.feed_response_error));
+                    mProfileRequestListener.onProfilesRequestFailure();
                 }
             }
         }.execute();
@@ -232,18 +243,18 @@ public class NetworkProcessor {
     public interface FeedRequestListener {
         void onFeedRequestSuccess(ArrayList<Feed> feeds);
 
-        void onFeedRequestFailure(String errorMessage);
+        void onFeedRequestFailure();
     }
 
     public interface TasksRequestListener {
         void onTasksRequestSuccess(ArrayList<Task> tasks);
 
-        void onTasksRequestFailure(String errorMessage);
+        void onTasksRequestFailure();
     }
 
     public interface ProfileRequestListener {
         void onProfilesRequestsSuccess(ArrayList<Profile> profiles);
 
-        void onProfilesRequestFailure(String errorMessage);
+        void onProfilesRequestFailure();
     }
 }

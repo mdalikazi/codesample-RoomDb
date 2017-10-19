@@ -31,6 +31,7 @@ public class ConnectionHelper {
             mHttpsURLConnection.setDoOutput(false);
             mHttpsURLConnection.setRequestMethod(NetConstants.REQUEST_METHOD_GET);
             mHttpsURLConnection.setConnectTimeout(NetConstants.REQUEST_TIMEOUT);
+            mHttpsURLConnection.setReadTimeout(NetConstants.REQUEST_TIMEOUT);
             mHttpsURLConnection.connect();
         } catch (Exception e) {
             Log.d(LOG_TAG, "Exception with get: " + e.toString());

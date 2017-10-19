@@ -1,5 +1,7 @@
 package com.alikazi.cc_airtasker;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -30,7 +32,14 @@ public class MainActivity extends AppCompatActivity
         NetworkProcessor.TasksRequestListener,
         NetworkProcessor.ProfileRequestListener {
 
-    public static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
+    private static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
+
+    private static final int SNACKBAR_FEED = 0;
+    private static final int SNACKBAR_TASKS = 1;
+    private static final int SNACKBAR_PROFILE = 2;
+    private static final int SNACKBAR_DONE = 3;
+    private static final int SNACKBAR_REQUEST_ERROR = 4;
+    private static final int SNACKBAR_NO_INTERNET = 5;
 
     // Logic
     private ArrayList<Feed> mFeed;
@@ -101,6 +110,12 @@ public class MainActivity extends AppCompatActivity
         super.onStop();
     }
 
+    private boolean isInternetConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return connectivityManager.getActiveNetworkInfo() != null &&
+                connectivityManager.getActiveNetworkInfo().isConnected();
+    }
+
     private void showHideEmptyListMessage(boolean show) {
         if (mEmptyListTextView != null) {
             mEmptyListTextView.setVisibility(show ? View.VISIBLE : View.GONE);
@@ -119,19 +134,38 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void processSnackbar(String message) {
-        if (message == null) {
-            return;
+    private void processSnackbar(int id) {
+        if (mSnackbar == null) {
+            mSnackbar = Snackbar.make(mSwipeRefreshLayout, "", Snackbar.LENGTH_INDEFINITE);
         }
-        if (!message.isEmpty()) {
-            if (mSnackbar == null) {
-                mSnackbar = Snackbar.make(mSwipeRefreshLayout, "", Snackbar.LENGTH_INDEFINITE);
-            }
-            mSnackbar.setText(message);
-            mSnackbar.show();
-        } else {
-            mSnackbar.setDuration(Snackbar.LENGTH_LONG);
+        switch (id) {
+            case SNACKBAR_FEED:
+                mSnackbar.setText(R.string.snackbar_message_getting_feed);
+                mSnackbar.setDuration(Snackbar.LENGTH_INDEFINITE);
+                break;
+            case SNACKBAR_TASKS:
+                mSnackbar.setText(R.string.snackbar_message_processing_tasks);
+                mSnackbar.setDuration(Snackbar.LENGTH_INDEFINITE);
+                break;
+            case SNACKBAR_PROFILE:
+                mSnackbar.setText(R.string.snackbar_message_processing_profiles);
+                mSnackbar.setDuration(Snackbar.LENGTH_INDEFINITE);
+                break;
+            case SNACKBAR_DONE:
+                mSnackbar.setText(R.string.snackbar_message_done);
+                mSnackbar.setDuration(Snackbar.LENGTH_SHORT);
+                break;
+            case SNACKBAR_REQUEST_ERROR:
+                mSnackbar.setText(R.string.snackbar_message_feed_response_error);
+                mSnackbar.setDuration(Snackbar.LENGTH_LONG);
+                break;
+            case SNACKBAR_NO_INTERNET:
+                mSnackbar.setText(R.string.snackbar_message_no_internet);
+                mSnackbar.setDuration(Snackbar.LENGTH_LONG);
+            default:
+                mSnackbar.dismiss();
         }
+        mSnackbar.show();
     }
 
     private void setupRecyclerScrollListener() {
@@ -149,12 +183,14 @@ public class MainActivity extends AppCompatActivity
 
     private void requestFeedFromServer(boolean showProgressBar) {
         Log.i(LOG_TAG, "requestFeedFromServer");
-        if (mNetworkProcessor != null) {
+        if (mNetworkProcessor != null && isInternetConnected()) {
             showHideProgressBar(showProgressBar);
             showHideSwipeRefreshing(!showProgressBar);
             showHideEmptyListMessage(false);
-            processSnackbar(getString(R.string.snackar_message_getting_feed));
+            processSnackbar(SNACKBAR_FEED);
             mNetworkProcessor.getFeed();
+        } else {
+            processSnackbar(SNACKBAR_NO_INTERNET);
         }
     }
 
@@ -167,12 +203,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFeedRequestFailure(String errorMessage) {
+    public void onFeedRequestFailure() {
         Log.i(LOG_TAG, "onFeedRequestFailure");
-        showHideProgressBar(false);
-        showHideSwipeRefreshing(false);
-        showHideEmptyListMessage(true);
-        processSnackbar(errorMessage);
+        processDefaultRequestFailure();
     }
 
     private void processTaskAndProfileIds() {
@@ -191,7 +224,7 @@ public class MainActivity extends AppCompatActivity
     private void requestTasksFromServer(ArrayList<Integer> taskIds) {
         Log.i(LOG_TAG, "requestFeedFromServer");
         if (mNetworkProcessor != null) {
-            processSnackbar(getString(R.string.snackbar_message_processing_tasks));
+            processSnackbar(SNACKBAR_TASKS);
             mNetworkProcessor.getTasks(taskIds);
         }
     }
@@ -205,18 +238,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onTasksRequestFailure(String errorMessage) {
+    public void onTasksRequestFailure() {
         Log.i(LOG_TAG, "onTasksRequestFailure");
-        showHideProgressBar(false);
-        showHideSwipeRefreshing(false);
-        showHideEmptyListMessage(true);
-        processSnackbar(errorMessage);
+        processDefaultRequestFailure();
     }
 
     private void requestProfilesFromServer(ArrayList<Integer> profileIds) {
         Log.i(LOG_TAG, "requestProfilesFromServer");
         if (mNetworkProcessor != null) {
-            processSnackbar(getString(R.string.snackbar_message_processing_profiles));
+            processSnackbar(SNACKBAR_PROFILE);
             mNetworkProcessor.getProfiles(profileIds);
         }
     }
@@ -227,7 +257,7 @@ public class MainActivity extends AppCompatActivity
         showHideProgressBar(false);
         showHideSwipeRefreshing(false);
         showHideEmptyListMessage(false);
-        processSnackbar("");
+        processSnackbar(SNACKBAR_DONE);
         mProfiles = new ArrayList<>();
         mProfiles = profiles;
         processFeedWithTasksAndProfiles();
@@ -235,12 +265,21 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onProfilesRequestFailure(String errorMessage) {
+    public void onProfilesRequestFailure() {
         Log.i(LOG_TAG, "onProfilesRequestFailure");
-        showHideProgressBar(false);
-        showHideSwipeRefreshing(false);
-        showHideEmptyListMessage(true);
-        processSnackbar(errorMessage);
+        processDefaultRequestFailure();
+    }
+
+    private void processDefaultRequestFailure() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showHideProgressBar(false);
+                showHideSwipeRefreshing(false);
+                showHideEmptyListMessage(true);
+                processSnackbar(SNACKBAR_REQUEST_ERROR);
+            }
+        });
     }
 
     private void processFeedWithTasksAndProfiles() {
