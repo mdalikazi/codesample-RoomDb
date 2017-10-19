@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity
         mFeedAdapter = new FeedAdapter(this);
         mRecyclerView.setAdapter(mFeedAdapter);
         setupRecyclerScrollListener();
+        showHideEmptyListMessage(true);
     }
 
     private void initUi() {
@@ -274,6 +275,7 @@ public class MainActivity extends AppCompatActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                mEmptyListTextView.setText(R.string.main_empty_list_message_error);
                 showHideProgressBar(false);
                 showHideSwipeRefreshing(false);
                 showHideEmptyListMessage(true);
