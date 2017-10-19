@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/list_item_feed_profile_photo"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/default_image_content_description"/>
+
+        <TextView
+            android:id="@+id/list_item_feed_task_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/list_item_feed_profile_photo"
+            android:layout_toRightOf="@+id/list_item_feed_profile_photo"
+            android:maxLines="3"
+            android:ellipsize="end"
+            tools:text="Bill asked a questions about this and that."/>
+
+        <TextView
+            android:id="@+id/list_item_feed_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/list_item_feed_profile_photo"
+            android:layout_toRightOf="@+id/list_item_feed_profile_photo"
+            android:layout_alignBottom="@+id/list_item_feed_profile_photo"
+            tools:text="Mar 10"/>
+
+        <TextView
+            android:id="@+id/list_item_feed_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignBottom="@+id/list_item_feed_profile_photo"
+            tools:text="comment"/>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_list_divider"/>
+
+</LinearLayout>

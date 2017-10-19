@@ -1,4 +1,4 @@
-package airtasker.cc.alikazi.com.cc_airtasker;
+package com.alikazi.cc_airtasker;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
