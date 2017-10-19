@@ -1,7 +1,6 @@
 package com.alikazi.cc_airtasker;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,14 +10,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alikazi.cc_airtasker.conf.AppConf;
-import com.alikazi.cc_airtasker.conf.NetConstants;
 import com.alikazi.cc_airtasker.models.Feed;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -65,32 +62,21 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case VIEW_TYPE_ITEM:
                 FeedListItemViewHolder listItemViewHolder = (FeedListItemViewHolder) holder;
                 Feed feedItem = mFeedList.get(adapterPostion);
-                Uri.Builder uriBuilder = new Uri.Builder()
-                        .scheme(NetConstants.SCHEME_HTTPS)
-                        .authority(NetConstants.STAGE_AIRTASKER)
-                        .appendPath(NetConstants.ANDROID_CODE_TEST);
-                String imageUrl = uriBuilder.build().toString() + feedItem.getProfile().getAvatar_mini_url();
+
                 Glide.with(mContext)
-                        .load(imageUrl)
+                        .load(feedItem.getProfile().getAvatarFullUrl())
                         .apply(new RequestOptions().placeholder(R.mipmap.ic_person_black_24dp))
                         .into(listItemViewHolder.profilePhotoImageView);
-                listItemViewHolder.taskDescriptionTextView.setText(feedItem.getText());
+
+                listItemViewHolder.taskDescriptionTextView.setText(feedItem.getProcessedText());
                 listItemViewHolder.feedTypeTextView.setText(feedItem.getEvent());
 
-                Date date = new Date();
-                try {
-                    SimpleDateFormat isoDateFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_ISO, Locale.US);
-                    date = isoDateFormat.parse(feedItem.getCreated_at());
-                } catch (Exception e) {
-                    Log.d(LOG_TAG, "Exception parsing iso date: " + e.toString());
-                }
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_DAY_TIME, Locale.US);
-                listItemViewHolder.dateTextView.setText(simpleDateFormat.format(date));
+                SimpleDateFormat dayTimeFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_DAY_TIME, Locale.US);
+                String dayTimeDateString = dayTimeFormat.format(feedItem.getCreatedAtJavaDate());
+                listItemViewHolder.dateTextView.setText(dayTimeDateString);
                 break;
-                //TODO CHECK IF DATE AND IMAGE URL CAN BE PARSED IN MODEL
                 //TODO ADD COMMENTS
                 //TODO ARCH COMPONENTS
-                //TODO HIDE FAB
         }
     }
 

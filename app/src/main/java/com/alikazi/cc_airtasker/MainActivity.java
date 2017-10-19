@@ -1,5 +1,6 @@
 package com.alikazi.cc_airtasker;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,7 +20,10 @@ import com.alikazi.cc_airtasker.models.Profile;
 import com.alikazi.cc_airtasker.models.Task;
 import com.alikazi.cc_airtasker.network.NetworkProcessor;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
         implements NetworkProcessor.FeedRequestListener,
@@ -116,7 +120,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void processSnackbar(String message) {
-        if (mSnackbar != null && mSnackbar.isShown()) {
+//        if (mSnackbar != null && mSnackbar.isShown()) {
+        if (message.isEmpty()) {
+            mSnackbar.setDuration(Snackbar.LENGTH_LONG);
             mSnackbar.dismiss();
         }
         if (message != null && !message.isEmpty()) {
@@ -240,14 +246,33 @@ public class MainActivity extends AppCompatActivity
             Task task = mTasks.get(i);
             Profile profile = mProfiles.get(i);
             if (feed.getTask_id() == task.getId() && feed.getProfile_id() == profile.getId()) {
+
                 // Replace {task_name} and {profile_name} with data from task and profile
                 String feedText = feed.getText();
                 feedText = feedText.replace(NetConstants.JSON_KEY_TASK_NAME, task.getName());
                 feedText = feedText.replace(NetConstants.JSON_KEY_PROFILE_NAME, profile.getFirst_name());
-                feed.setText(feedText);
+                feed.setProcessedText(feedText);
+
                 // Set transient task and profile objects on feed
                 feed.setTask(task);
                 feed.setProfile(profile);
+            }
+
+            // Convert mini url of profile photo to full url
+            Uri.Builder uriBuilder = new Uri.Builder()
+                    .scheme(NetConstants.SCHEME_HTTPS)
+                    .authority(NetConstants.STAGE_AIRTASKER)
+                    .appendPath(NetConstants.ANDROID_CODE_TEST);
+            String imageUrl = uriBuilder.build().toString() + feed.getProfile().getAvatar_mini_url();
+            feed.getProfile().setAvatarFullUrl(imageUrl);
+
+            // Convert ISO date to Java date
+            try {
+                SimpleDateFormat isoDateFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_ISO, Locale.US);
+                Date javaDate = isoDateFormat.parse(feed.getCreated_at());
+                feed.setCreatedAtJavaDate(javaDate);
+            } catch (Exception e) {
+                Log.d(LOG_TAG, "Exception parsing iso date: " + e.toString());
             }
         }
     }

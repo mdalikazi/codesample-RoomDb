@@ -11,6 +11,8 @@ public class Profile {
     private String first_name;
     private int rating;
 
+    private transient String avatarFullUrl;
+
     public int getId() {
         return id;
     }
@@ -27,19 +29,11 @@ public class Profile {
         return rating;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getAvatarFullUrl() {
+        return avatarFullUrl;
     }
 
-    public void setAvatar_mini_url(String avatar_mini_url) {
-        this.avatar_mini_url = avatar_mini_url;
-    }
-
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
+    public void setAvatarFullUrl(String fullUrl) {
+        this.avatarFullUrl = fullUrl;
     }
 }
