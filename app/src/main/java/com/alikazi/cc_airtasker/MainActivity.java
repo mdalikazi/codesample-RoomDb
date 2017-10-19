@@ -226,10 +226,14 @@ public class MainActivity extends AppCompatActivity
             Task task = mTasks.get(i);
             Profile profile = mProfiles.get(i);
             if (feed.getTask_id() == task.getId() && feed.getProfile_id() == profile.getId()) {
+                // Replace {task_name} and {profile_name} with data from task and profile
                 String feedText = feed.getText();
                 feedText = feedText.replace(NetConstants.JSON_KEY_TASK_NAME, task.getName());
                 feedText = feedText.replace(NetConstants.JSON_KEY_PROFILE_NAME, profile.getFirst_name());
                 feed.setText(feedText);
+                // Set transient task and profile objects on feed
+                feed.setTask(task);
+                feed.setProfile(profile);
             }
         }
     }

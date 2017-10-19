@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
+    android:background="?attr/selectableItemBackground"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -15,11 +17,11 @@
             android:id="@+id/list_item_feed_profile_photo"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:contentDescription="@string/default_image_content_description"
-            android:alpha="0.7"
-            android:src="@mipmap/ic_person_black_24dp"/>
+            android:contentDescription="@string/default_image_content_description"/>
 
         <TextView
             android:id="@+id/list_item_feed_task_description"

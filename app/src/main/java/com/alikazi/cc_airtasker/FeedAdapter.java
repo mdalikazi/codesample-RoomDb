@@ -1,7 +1,9 @@
 package com.alikazi.cc_airtasker;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +11,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alikazi.cc_airtasker.conf.AppConf;
+import com.alikazi.cc_airtasker.conf.NetConstants;
 import com.alikazi.cc_airtasker.models.Feed;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by kazi_ on 10/18/2017.
@@ -31,9 +39,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void setFeedList(ArrayList<Feed> feedList) {
+        Log.i(LOG_TAG, "setFeedList");
         mFeedList = new ArrayList<>();
         mFeedList.clear();
         mFeedList = feedList;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -55,11 +65,27 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case VIEW_TYPE_ITEM:
                 FeedListItemViewHolder listItemViewHolder = (FeedListItemViewHolder) holder;
                 Feed feedItem = mFeedList.get(adapterPostion);
-//                listItemViewHolder.profilePhotoImageView.setImageResource(feedItem.);
+                Uri.Builder uriBuilder = new Uri.Builder()
+                        .scheme(NetConstants.SCHEME_HTTPS)
+                        .authority(NetConstants.STAGE_AIRTASKER)
+                        .appendPath(NetConstants.ANDROID_CODE_TEST);
+                String imageUrl = uriBuilder.build().toString() + feedItem.getProfile().getAvatar_mini_url();
+                Glide.with(mContext)
+                        .load(imageUrl)
+                        .apply(new RequestOptions().placeholder(R.mipmap.ic_person_black_24dp))
+                        .into(listItemViewHolder.profilePhotoImageView);
                 listItemViewHolder.taskDescriptionTextView.setText(feedItem.getText());
-                listItemViewHolder.dateTextView.setText(feedItem.getEvent());
-//                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("")
-//                feedItem.getCreated_at()
+                listItemViewHolder.feedTypeTextView.setText(feedItem.getEvent());
+
+                Date date = new Date();
+                try {
+                    SimpleDateFormat isoDateFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_ISO, Locale.US);
+                    date = isoDateFormat.parse(feedItem.getCreated_at());
+                } catch (Exception e) {
+                    Log.d(LOG_TAG, "Exception parsing iso date: " + e.toString());
+                }
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_DAY_TIME, Locale.US);
+                listItemViewHolder.dateTextView.setText(simpleDateFormat.format(date));
                 break;
 
         }

@@ -12,6 +12,9 @@ public class Feed {
     private String created_at;
     private String event;
 
+    private transient Task task;
+    private transient Profile profile;
+
     public int getTask_id() {
         return task_id;
     }
@@ -28,11 +31,27 @@ public class Feed {
         return created_at;
     }
 
+    public Task getTask() {
+        return task;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
     public String getEvent() {
         return event;
     }
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 }
