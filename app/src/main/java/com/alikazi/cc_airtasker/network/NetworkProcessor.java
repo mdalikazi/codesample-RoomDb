@@ -84,8 +84,8 @@ public class NetworkProcessor {
                     if (mFeedRequestCallbacksListener != null) {
                         mFeedRequestCallbacksListener.onFeedRequestFailure();
                     }
+                    return null;
                 }
-
                 return feeds;
             }
 
@@ -154,6 +154,7 @@ public class NetworkProcessor {
                     if (mTasksRequestListener != null) {
                         mTasksRequestListener.onTasksRequestFailure();
                     }
+                    return null;
                 }
                 return tasks;
             }
@@ -224,6 +225,7 @@ public class NetworkProcessor {
                     if (mProfileRequestListener != null) {
                         mProfileRequestListener.onProfilesRequestFailure();
                     }
+                    return null;
                 }
                 return profiles;
             }
