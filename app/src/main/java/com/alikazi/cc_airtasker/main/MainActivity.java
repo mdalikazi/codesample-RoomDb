@@ -1,4 +1,4 @@
-package com.alikazi.cc_airtasker;
+package com.alikazi.cc_airtasker.main;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.alikazi.cc_airtasker.R;
 import com.alikazi.cc_airtasker.conf.AppConf;
 import com.alikazi.cc_airtasker.conf.NetConstants;
 import com.alikazi.cc_airtasker.models.Feed;

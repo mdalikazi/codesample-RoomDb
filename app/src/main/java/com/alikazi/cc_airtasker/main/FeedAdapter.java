@@ -1,4 +1,4 @@
-package com.alikazi.cc_airtasker;
+package com.alikazi.cc_airtasker.main;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +12,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alikazi.cc_airtasker.R;
 import com.alikazi.cc_airtasker.conf.AppConf;
 import com.alikazi.cc_airtasker.models.Feed;
 import com.bumptech.glide.Glide;
