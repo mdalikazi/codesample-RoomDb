@@ -33,4 +33,6 @@ ext {
     supportLibVersion = "26.1.0"
     archLifecycleVersion = "1.0.0-alpha1"
     archRoomVersion = "1.0.0-alpha1"
+    runnerVersion = "0.5"
+    rulesVersion = "0.5"
 }
