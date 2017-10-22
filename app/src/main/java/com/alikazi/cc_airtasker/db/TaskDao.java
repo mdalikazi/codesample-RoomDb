@@ -18,8 +18,8 @@ public interface TaskDao {
     @Query("SELECT * FROM TaskEntity")
     List<TaskEntity> loadAllTasks();
 
-    @Query("SELECT * FROM TaskEntity WHERE id = :taskId")
-    TaskEntity loadTaskById(int taskId);
+    @Query("SELECT * FROM TaskEntity WHERE id = :id")
+    TaskEntity loadTaskById(int id);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertTask(TaskEntity task);

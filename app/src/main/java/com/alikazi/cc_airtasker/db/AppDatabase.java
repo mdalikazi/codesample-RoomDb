@@ -16,7 +16,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract FeedDao feedModel();
     public abstract TaskDao taskModel();
-    public abstract ProfileDao profleModel();
+    public abstract ProfileDao profileModel();
 
     public static AppDatabase getDatabaseInstance(Context context) {
         if (DATABASE_INSTANCE == null) {

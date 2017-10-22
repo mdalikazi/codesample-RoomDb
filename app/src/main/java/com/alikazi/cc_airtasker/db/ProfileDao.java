@@ -22,8 +22,8 @@ public interface ProfileDao {
     @Query("SELECT * FROM ProfileEntity")
     List<ProfileEntity> loadAllProfiles();
 
-    @Query("SELECT * FROM ProfileEntity WHERE id = :profileId")
-    List<ProfileEntity> loadProfileById(int profileId);
+    @Query("SELECT * FROM ProfileEntity WHERE id = :id")
+    List<ProfileEntity> loadProfileById(int id);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertProfile(ProfileEntity profile);

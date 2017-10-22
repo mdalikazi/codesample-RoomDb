@@ -3,6 +3,7 @@ package com.alikazi.cc_airtasker.db;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
+import android.support.annotation.NonNull;
 
 import com.alikazi.cc_airtasker.db.type_converters.MiniUrlConverter;
 
@@ -13,9 +14,9 @@ import com.alikazi.cc_airtasker.db.type_converters.MiniUrlConverter;
 @Entity
 @TypeConverters(MiniUrlConverter.class)
 public class ProfileEntity {
-    @PrimaryKey
-    private int id;
-    private String avatar_mini_url;
-    private String first_name;
-    private int rating;
+    @NonNull
+    public @PrimaryKey int id;
+    public String avatar_mini_url;
+    public String first_name;
+    public int rating;
 }

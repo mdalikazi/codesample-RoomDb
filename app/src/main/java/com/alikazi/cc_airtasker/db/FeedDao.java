@@ -22,8 +22,8 @@ public interface FeedDao {
     @Query("SELECT * FROM FeedEntity")
     List<FeedEntity> loadAllFeed();
 
-    @Query("SELECT * FROM FeedEntity WHERE id = :feedId")
-    FeedEntity loadFeedById(int feedId);
+    @Query("SELECT * FROM FeedEntity WHERE id = :id")
+    FeedEntity loadFeedById(int id);
 
     @Query("SELECT * FROM FeedEntity " +
             "INNER JOIN TaskEntity ON TaskEntity.id = FeedEntity.task_id")

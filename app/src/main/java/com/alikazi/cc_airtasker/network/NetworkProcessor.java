@@ -1,5 +1,6 @@
 package com.alikazi.cc_airtasker.network;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -29,7 +30,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class NetworkProcessor {
 
-    public static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
+    private static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
 
     private Context mContext;
     private Uri.Builder mUriBuilder;
@@ -47,6 +48,7 @@ public class NetworkProcessor {
         mProfileRequestListener = profileRequestListener;
     }
 
+    @SuppressLint("StaticFieldLeak")
     public void getFeed() {
         new AsyncTask<Void, Void, ArrayList<Feed>>() {
             @Override
@@ -93,15 +95,18 @@ public class NetworkProcessor {
             @Override
             protected void onPostExecute(ArrayList<Feed> feed) {
                 Log.i(LOG_TAG, "getFeed onPostExecute");
-                if (mFeedRequestCallbacksListener != null && feed != null && !feed.isEmpty()) {
-                    mFeedRequestCallbacksListener.onFeedRequestSuccess(feed);
-                } else {
-                    mFeedRequestCallbacksListener.onFeedRequestFailure();
+                if (mFeedRequestCallbacksListener != null) {
+                    if (feed != null && !feed.isEmpty()) {
+                        mFeedRequestCallbacksListener.onFeedRequestSuccess(feed);
+                    } else {
+                        mFeedRequestCallbacksListener.onFeedRequestFailure();
+                    }
                 }
             }
         }.execute();
     }
 
+    @SuppressLint("StaticFieldLeak")
     public void getTasks(final LinkedHashSet<Integer> taskIds) {
         final ArrayList<URL> tasksUrlList = new ArrayList<>();
         new AsyncTask<Void, Void, ArrayList<Task>>() {
@@ -163,15 +168,18 @@ public class NetworkProcessor {
             @Override
             protected void onPostExecute(ArrayList<Task> tasks) {
                 Log.i(LOG_TAG, "getTasks onPostExecute");
-                if (mTasksRequestListener != null && tasks != null && !tasks.isEmpty()) {
-                    mTasksRequestListener.onTasksRequestSuccess(tasks);
-                } else {
-                    mTasksRequestListener.onTasksRequestFailure();
+                if (mTasksRequestListener != null) {
+                    if (tasks != null && !tasks.isEmpty()) {
+                        mTasksRequestListener.onTasksRequestSuccess(tasks);
+                    } else {
+                        mTasksRequestListener.onTasksRequestFailure();
+                    }
                 }
             }
         }.execute();
     }
 
+    @SuppressLint("StaticFieldLeak")
     public void getProfiles(final LinkedHashSet<Integer> profileIds) {
         final ArrayList<URL> profilesUrlList = new ArrayList<>();
         new AsyncTask<Void, Void, ArrayList<Profile>>() {
@@ -233,10 +241,12 @@ public class NetworkProcessor {
             @Override
             protected void onPostExecute(ArrayList<Profile> profiles) {
                 Log.i(LOG_TAG, "getProfiles onPostExecute");
-                if (mProfileRequestListener != null && profiles != null && !profiles.isEmpty()) {
-                    mProfileRequestListener.onProfilesRequestsSuccess(profiles);
-                } else {
-                    mProfileRequestListener.onProfilesRequestFailure();
+                if (mProfileRequestListener != null) {
+                    if (profiles != null && !profiles.isEmpty()) {
+                        mProfileRequestListener.onProfilesRequestsSuccess(profiles);
+                    } else {
+                        mProfileRequestListener.onProfilesRequestFailure();
+                    }
                 }
             }
         }.execute();

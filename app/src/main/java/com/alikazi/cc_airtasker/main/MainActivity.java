@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,6 +19,9 @@ import android.widget.TextView;
 import com.alikazi.cc_airtasker.R;
 import com.alikazi.cc_airtasker.conf.AppConf;
 import com.alikazi.cc_airtasker.conf.NetConstants;
+import com.alikazi.cc_airtasker.db.AppDatabase;
+import com.alikazi.cc_airtasker.db.FakeDataDb;
+import com.alikazi.cc_airtasker.db.FeedEntity;
 import com.alikazi.cc_airtasker.models.Feed;
 import com.alikazi.cc_airtasker.models.Profile;
 import com.alikazi.cc_airtasker.models.Task;
@@ -27,12 +31,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
         implements NetworkProcessor.FeedRequestListener,
         NetworkProcessor.TasksRequestListener,
-        NetworkProcessor.ProfileRequestListener {
+        NetworkProcessor.ProfileRequestListener,
+        FakeDataDb.FakeDbCallbacksListener {
 
     private static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
 
@@ -51,6 +57,7 @@ public class MainActivity extends AppCompatActivity
     private LinkedHashSet<Integer> mProfileIds;
     private FeedAdapter mFeedAdapter;
     private NetworkProcessor mNetworkProcessor;
+    private AppDatabase mDbInstance;
 
     // UI
     private RecyclerView mRecyclerView;
@@ -88,6 +95,15 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mFeedAdapter);
         setupRecyclerScrollListener();
         showHideEmptyListMessage(true);
+
+        mDbInstance = AppDatabase.getDatabaseInstance(this);
+        FakeDataDb.initDbAsync(mDbInstance, this);
+
+    }
+
+    @Override
+    public void onFakeDbCreationComplete() {
+        fetchFakeDbData();
     }
 
     private void initUi() {
@@ -96,6 +112,25 @@ public class MainActivity extends AppCompatActivity
         mProgressBar = findViewById(R.id.main_progress_bar);
         mEmptyListTextView = findViewById(R.id.main_empty_list_message);
         mSwipeRefreshLayout = findViewById(R.id.main_swipe_refresh_layout);
+    }
+
+    private void fetchFakeDbData() {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                List<FeedEntity> feedEntities = mDbInstance.feedModel().loadAllFeed();
+                for (FeedEntity feedEntity : feedEntities) {
+
+                    Log.d(LOG_TAG, "feedEntity.id: " + feedEntity.id);
+                    Log.d(LOG_TAG, "feedEntity.task_id: " + feedEntity.task_id);
+                    Log.d(LOG_TAG, "feedEntity.profile_id: " + feedEntity.profile_id);
+                    Log.d(LOG_TAG, "feedEntity.event: " + feedEntity.event);
+                    Log.d(LOG_TAG, "feedEntity.created_at: " + feedEntity.created_at);
+                    Log.d(LOG_TAG, "feedEntity.text: " + feedEntity.text);
+                    Log.d(LOG_TAG, "-----------------------------------------------------");
+                }
+            }
+        });
     }
 
     @Override
