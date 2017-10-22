@@ -16,6 +16,7 @@ import com.alikazi.cc_airtasker.R;
 import com.alikazi.cc_airtasker.conf.AppConf;
 import com.alikazi.cc_airtasker.models.Feed;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.text.SimpleDateFormat;
@@ -72,6 +73,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 Glide.with(mContext)
                         .load(feedItem.getProfile().getAvatarFullUrl())
+                        .transition(new DrawableTransitionOptions().crossFade())
                         .apply(new RequestOptions().placeholder(R.mipmap.ic_person_black_24dp))
                         .into(listItemViewHolder.profilePhotoImageView);
 
@@ -111,9 +113,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (!mAnimate) {
             return;
         }
-        TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, 500, 0);
+        TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, 1500, 0);
         translateAnimation.setInterpolator(new DecelerateInterpolator());
-        translateAnimation.setDuration(500);
+        translateAnimation.setDuration(1250);
         translateAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {

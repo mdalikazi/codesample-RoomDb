@@ -21,7 +21,7 @@ import com.alikazi.cc_airtasker.conf.AppConf;
 import com.alikazi.cc_airtasker.conf.NetConstants;
 import com.alikazi.cc_airtasker.db.AppDatabase;
 import com.alikazi.cc_airtasker.db.FakeDataDb;
-import com.alikazi.cc_airtasker.db.FeedEntity;
+import com.alikazi.cc_airtasker.db.entities.FeedEntity;
 import com.alikazi.cc_airtasker.models.Feed;
 import com.alikazi.cc_airtasker.models.Profile;
 import com.alikazi.cc_airtasker.models.Task;

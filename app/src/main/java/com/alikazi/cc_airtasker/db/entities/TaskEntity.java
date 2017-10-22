@@ -1,4 +1,4 @@
-package com.alikazi.cc_airtasker.db;
+package com.alikazi.cc_airtasker.db.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;

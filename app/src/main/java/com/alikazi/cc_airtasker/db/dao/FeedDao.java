@@ -1,4 +1,4 @@
-package com.alikazi.cc_airtasker.db;
+package com.alikazi.cc_airtasker.db.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
@@ -7,6 +7,7 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.TypeConverters;
 import android.arch.persistence.room.Update;
 
+import com.alikazi.cc_airtasker.db.entities.FeedEntity;
 import com.alikazi.cc_airtasker.db.type_converters.DateConverter;
 
 import java.util.List;

@@ -1,6 +1,5 @@
-package com.alikazi.cc_airtasker.db;
+package com.alikazi.cc_airtasker.db.entities;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
@@ -25,9 +24,9 @@ import com.alikazi.cc_airtasker.db.type_converters.DateConverter;
 public class FeedEntity {
     @PrimaryKey(autoGenerate = true)
     public int id;
-    @ColumnInfo(name = "task_id")
+//    @ColumnInfo(name = "task_id")
     public int task_id;
-    @ColumnInfo(name = "profile_id")
+//    @ColumnInfo(name = "profile_id")
     public int profile_id;
     public String text;
     public String created_at;

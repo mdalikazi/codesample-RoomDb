@@ -3,6 +3,9 @@ package com.alikazi.cc_airtasker.db;
 import android.os.AsyncTask;
 
 import com.alikazi.cc_airtasker.conf.AppConf;
+import com.alikazi.cc_airtasker.db.entities.FeedEntity;
+import com.alikazi.cc_airtasker.db.entities.ProfileEntity;
+import com.alikazi.cc_airtasker.db.entities.TaskEntity;
 
 /**
  * Created by kazi_ on 10/22/2017.
@@ -84,7 +87,7 @@ public class FakeDataDb {
     }
 
     private static TaskEntity addFakeTask(AppDatabase db, int id, int posterId, int workerId, String name,
-                                    String description, String state) {
+                                          String description, String state) {
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.id = id;
         taskEntity.poster_id = posterId;

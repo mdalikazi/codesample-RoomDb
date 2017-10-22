@@ -5,6 +5,13 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import com.alikazi.cc_airtasker.db.dao.FeedDao;
+import com.alikazi.cc_airtasker.db.dao.ProfileDao;
+import com.alikazi.cc_airtasker.db.dao.TaskDao;
+import com.alikazi.cc_airtasker.db.entities.FeedEntity;
+import com.alikazi.cc_airtasker.db.entities.ProfileEntity;
+import com.alikazi.cc_airtasker.db.entities.TaskEntity;
+
 /**
  * Created by kazi_ on 10/22/2017.
  */
