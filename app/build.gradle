@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+def commitCount = Integer.parseInt(['sh','-c','git rev-list --all --count'].execute().text.trim())
+
 android {
     compileSdkVersion 26
     buildToolsVersion rootProject.buildToolsVersion
@@ -7,7 +9,7 @@ android {
         applicationId 'com.alikazi.cc_airtasker'
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 1
+        versionCode commitCount
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
