@@ -81,6 +81,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 listItemViewHolder.dateTextView.setText(feedItem.created_at);
                 break;
                 //TODO ADD COMMENTS
+                //TODO ADD DIALOG WITH DETAIL
+                //TODO ADD SPLASHSCREENS
         }
     }
 

@@ -12,11 +12,10 @@ import com.alikazi.cc_airtasker.db.type_converters.MiniUrlConverter;
  */
 
 @Entity
-@TypeConverters(MiniUrlConverter.class)
 public class ProfileEntity {
     @NonNull
     public @PrimaryKey int id;
-    public String avatar_mini_url;
+    public @TypeConverters(MiniUrlConverter.class) String avatar_mini_url;
     public String first_name;
     public int rating;
 }
