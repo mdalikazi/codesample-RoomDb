@@ -23,18 +23,27 @@ import com.alikazi.cc_airtasker.db.type_converters.MiniUrlConverter;
 @TypeConverters({DateConverter.class, MiniUrlConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
+    private static final String DATABASE_NAME = "appdatabase.db";
     private static AppDatabase DATABASE_INSTANCE;
 
     public abstract FeedDao feedModel();
     public abstract TaskDao taskModel();
     public abstract ProfileDao profileModel();
 
-    public static AppDatabase getDatabaseInstance(Context context) {
+    public static AppDatabase getDatabaseInstance(Context context, boolean inMemory) {
         if (DATABASE_INSTANCE == null) {
-            DATABASE_INSTANCE =
-                    Room.inMemoryDatabaseBuilder(context.getApplicationContext(), AppDatabase.class)
-                            .allowMainThreadQueries()
-                            .build();
+            RoomDatabase.Builder<AppDatabase> databaseBuilder;
+
+            if (inMemory) {
+                databaseBuilder =
+                        Room.inMemoryDatabaseBuilder(context.getApplicationContext(), AppDatabase.class)
+                                .allowMainThreadQueries();
+            } else {
+                databaseBuilder =
+                        Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, DATABASE_NAME);
+            }
+
+            DATABASE_INSTANCE = databaseBuilder.build();
         }
 
         return DATABASE_INSTANCE;

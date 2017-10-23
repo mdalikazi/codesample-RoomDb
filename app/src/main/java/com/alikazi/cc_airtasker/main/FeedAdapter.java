@@ -78,6 +78,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 //                SimpleDateFormat dayTimeFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_DAY_TIME, Locale.US);
 //                String dayTimeDateString = dayTimeFormat.format(feedItem.getCreatedAtJavaDate());
 //                listItemViewHolder.dateTextView.setText(dayTimeDateString);
+                
                 listItemViewHolder.dateTextView.setText(feedItem.created_at);
                 break;
                 //TODO ADD COMMENTS
@@ -110,9 +111,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (!mAnimate) {
             return;
         }
-        TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, 1500, 0);
+        TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, 1000, 0);
         translateAnimation.setInterpolator(new DecelerateInterpolator());
-        translateAnimation.setDuration(1250);
+        translateAnimation.setDuration(1000);
         translateAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
