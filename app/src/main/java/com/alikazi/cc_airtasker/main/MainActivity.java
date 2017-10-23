@@ -25,9 +25,6 @@ import com.alikazi.cc_airtasker.db.FakeDataDb;
 import com.alikazi.cc_airtasker.db.entities.FeedEntity;
 import com.alikazi.cc_airtasker.db.entities.ProfileEntity;
 import com.alikazi.cc_airtasker.db.entities.TaskEntity;
-import com.alikazi.cc_airtasker.models.Feed;
-import com.alikazi.cc_airtasker.models.Profile;
-import com.alikazi.cc_airtasker.models.Task;
 import com.alikazi.cc_airtasker.network.NetworkProcessor;
 
 import java.text.SimpleDateFormat;
@@ -152,7 +149,8 @@ public class MainActivity extends AppCompatActivity
 
     private boolean isInternetConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        return connectivityManager.getActiveNetworkInfo() != null &&
+        return connectivityManager != null &&
+                connectivityManager.getActiveNetworkInfo() != null &&
                 connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
@@ -238,7 +236,7 @@ public class MainActivity extends AppCompatActivity
     public void onFeedRequestSuccess() {
         Log.i(LOG_TAG, "onFeedRequestSuccess");
         mFeed = new ArrayList<>();
-        mFeed = (ArrayList) mDbInstance.feedModel().loadAllFeed();
+        mFeed = (ArrayList<FeedEntity>) mDbInstance.feedModel().loadAllFeed();
         processTaskAndProfileIds();
     }
 
@@ -273,7 +271,7 @@ public class MainActivity extends AppCompatActivity
     public void onTasksRequestSuccess() {
         Log.i(LOG_TAG, "onTasksRequestSuccess");
         mTasks = new ArrayList<>();
-        mTasks = (ArrayList) mDbInstance.taskModel().loadAllTasks();
+        mTasks = (ArrayList<TaskEntity>) mDbInstance.taskModel().loadAllTasks();
         requestProfilesFromServer(mProfileIds);
     }
 
@@ -299,7 +297,7 @@ public class MainActivity extends AppCompatActivity
         showHideEmptyListMessage(false);
         processSnackbar(SNACKBAR_DONE);
         mProfiles = new ArrayList<>();
-        mProfiles = (ArrayList) mDbInstance.profileModel().loadAllProfiles();
+        mProfiles = (ArrayList<ProfileEntity>) mDbInstance.profileModel().loadAllProfiles();
         processFeedWithTasksAndProfiles();
         mFeedAdapter.setFeedList(mFeed);
     }
