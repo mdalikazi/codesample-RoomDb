@@ -6,34 +6,10 @@ package com.alikazi.cc_airtasker.models;
 
 public class Profile {
 
-    private int id;
-    private String avatar_mini_url;
-    private String first_name;
-    private int rating;
+    public int id;
+    public String avatar_mini_url;
+    public String first_name;
+    public int rating;
 
-    private transient String avatarFullUrl;
-
-    public int getId() {
-        return id;
-    }
-
-    public String getAvatar_mini_url() {
-        return avatar_mini_url;
-    }
-
-    public String getFirst_name() {
-        return first_name;
-    }
-
-    public int getRating() {
-        return rating;
-    }
-
-    public String getAvatarFullUrl() {
-        return avatarFullUrl;
-    }
-
-    public void setAvatarFullUrl(String fullUrl) {
-        this.avatarFullUrl = fullUrl;
-    }
+    public transient String avatarFullUrl;
 }

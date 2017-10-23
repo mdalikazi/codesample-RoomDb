@@ -1,4 +1,4 @@
-package com.alikazi.cc_airtasker;
+package com.alikazi.cc_airtasker.main;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -12,14 +12,11 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alikazi.cc_airtasker.R;
 import com.alikazi.cc_airtasker.conf.AppConf;
-import com.alikazi.cc_airtasker.models.Feed;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+import com.alikazi.cc_airtasker.db.entities.FeedEntity;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 
 /**
  * Created by kazi_ on 10/18/2017.
@@ -33,13 +30,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
     private boolean mAnimate;
-    private ArrayList<Feed> mFeedList;
+    private ArrayList<FeedEntity> mFeedList;
 
     public FeedAdapter(Context context) {
         mContext = context;
     }
 
-    public void setFeedList(ArrayList<Feed> feedList) {
+    public void setFeedList(ArrayList<FeedEntity> feedList) {
         Log.i(LOG_TAG, "setFeedList");
         mAnimate = true;
         mFeedList = new ArrayList<>();
@@ -67,22 +64,23 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_ITEM:
                 FeedListItemViewHolder listItemViewHolder = (FeedListItemViewHolder) holder;
-                Feed feedItem = mFeedList.get(adapterPostion);
+                FeedEntity feedItem = mFeedList.get(adapterPostion);
 
-                Glide.with(mContext)
+                /*Glide.with(mContext)
                         .load(feedItem.getProfile().getAvatarFullUrl())
+                        .transition(new DrawableTransitionOptions().crossFade())
                         .apply(new RequestOptions().placeholder(R.mipmap.ic_person_black_24dp))
-                        .into(listItemViewHolder.profilePhotoImageView);
+                        .into(listItemViewHolder.profilePhotoImageView);*/
 
-                listItemViewHolder.taskDescriptionTextView.setText(feedItem.getProcessedText());
-                listItemViewHolder.feedTypeTextView.setText(feedItem.getEvent());
+                listItemViewHolder.taskDescriptionTextView.setText(feedItem.text);
+                listItemViewHolder.feedTypeTextView.setText(feedItem.event);
 
-                SimpleDateFormat dayTimeFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_DAY_TIME, Locale.US);
-                String dayTimeDateString = dayTimeFormat.format(feedItem.getCreatedAtJavaDate());
-                listItemViewHolder.dateTextView.setText(dayTimeDateString);
+//                SimpleDateFormat dayTimeFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_DAY_TIME, Locale.US);
+//                String dayTimeDateString = dayTimeFormat.format(feedItem.getCreatedAtJavaDate());
+//                listItemViewHolder.dateTextView.setText(dayTimeDateString);
+                listItemViewHolder.dateTextView.setText(feedItem.created_at);
                 break;
                 //TODO ADD COMMENTS
-                //TODO ARCH COMPONENTS
         }
     }
 
@@ -98,7 +96,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         if (mFeedList != null) {
-            if (mFeedList.get(position) instanceof Feed) {
+            if (mFeedList.get(position) instanceof FeedEntity) {
                 return VIEW_TYPE_ITEM;
             }
         }
@@ -110,9 +108,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (!mAnimate) {
             return;
         }
-        TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, 500, 0);
+        TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, 1500, 0);
         translateAnimation.setInterpolator(new DecelerateInterpolator());
-        translateAnimation.setDuration(500);
+        translateAnimation.setDuration(1250);
         translateAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
