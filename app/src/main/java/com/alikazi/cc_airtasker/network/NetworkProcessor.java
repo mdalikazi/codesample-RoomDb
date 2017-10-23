@@ -9,6 +9,10 @@ import android.util.Log;
 import com.alikazi.cc_airtasker.R;
 import com.alikazi.cc_airtasker.conf.AppConf;
 import com.alikazi.cc_airtasker.conf.NetConstants;
+import com.alikazi.cc_airtasker.db.AppDatabase;
+import com.alikazi.cc_airtasker.db.entities.FeedEntity;
+import com.alikazi.cc_airtasker.db.entities.ProfileEntity;
+import com.alikazi.cc_airtasker.db.entities.TaskEntity;
 import com.alikazi.cc_airtasker.models.Feed;
 import com.alikazi.cc_airtasker.models.Profile;
 import com.alikazi.cc_airtasker.models.Task;
@@ -33,6 +37,7 @@ public class NetworkProcessor {
     private static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
 
     private Context mContext;
+    private AppDatabase mDatabaseInstance;
     private Uri.Builder mUriBuilder;
     private BufferedInputStream mBufferedInputStream;
     private InputStreamReader mInputStreamReader;
@@ -40,9 +45,10 @@ public class NetworkProcessor {
     private TasksRequestListener mTasksRequestListener;
     private ProfileRequestListener mProfileRequestListener;
 
-    public NetworkProcessor(Context context, FeedRequestListener feedRequestCallbacksListener,
+    public NetworkProcessor(Context context, AppDatabase databaseInstance, FeedRequestListener feedRequestCallbacksListener,
                             TasksRequestListener tasksRequestListener, ProfileRequestListener profileRequestListener) {
         mContext = context;
+        mDatabaseInstance = databaseInstance;
         mFeedRequestCallbacksListener = feedRequestCallbacksListener;
         mTasksRequestListener = tasksRequestListener;
         mProfileRequestListener = profileRequestListener;
@@ -64,7 +70,6 @@ public class NetworkProcessor {
             @Override
             protected ArrayList<Feed> doInBackground(Void... voids) {
                 Log.i(LOG_TAG, "getFeed doInBackground");
-                ArrayList<Feed> feeds = new ArrayList<>();
                 ConnectionHelper connectionHelper = new ConnectionHelper();
                 try {
                     URL url = new URL(mUriBuilder.build().toString());
@@ -73,8 +78,11 @@ public class NetworkProcessor {
                         mBufferedInputStream = new BufferedInputStream(httpsURLConnection.getInputStream());
                         mInputStreamReader = new InputStreamReader(mBufferedInputStream);
                         Gson gson = new Gson();
-                        Feed[] feed = gson.fromJson(mInputStreamReader, Feed[].class);
-                        feeds = new ArrayList<>(Arrays.asList(feed));
+                        FeedEntity[] feedsArray = gson.fromJson(mInputStreamReader, FeedEntity[].class);
+                        ArrayList<FeedEntity> feedsList = new ArrayList<>(Arrays.asList(feedsArray));
+                        for (FeedEntity feed : feedsList) {
+                            mDatabaseInstance.feedModel().insertFeed(feed);
+                        }
                         if (mInputStreamReader != null) {
                             mInputStreamReader.close();
                         }
@@ -87,9 +95,8 @@ public class NetworkProcessor {
                     if (mFeedRequestCallbacksListener != null) {
                         mFeedRequestCallbacksListener.onFeedRequestFailure();
                     }
-                    return null;
                 }
-                return feeds;
+                return null;
             }
 
             @Override
@@ -97,7 +104,7 @@ public class NetworkProcessor {
                 Log.i(LOG_TAG, "getFeed onPostExecute");
                 if (mFeedRequestCallbacksListener != null) {
                     if (feed != null && !feed.isEmpty()) {
-                        mFeedRequestCallbacksListener.onFeedRequestSuccess(feed);
+                        mFeedRequestCallbacksListener.onFeedRequestSuccess();
                     } else {
                         mFeedRequestCallbacksListener.onFeedRequestFailure();
                     }
@@ -145,8 +152,9 @@ public class NetworkProcessor {
                             mBufferedInputStream = new BufferedInputStream(httpsURLConnection.getInputStream());
                             mInputStreamReader = new InputStreamReader(mBufferedInputStream);
                             Gson gson = new Gson();
-                            Task task = gson.fromJson(mInputStreamReader, Task.class);
-                            tasks.add(task);
+                            TaskEntity task = gson.fromJson(mInputStreamReader, TaskEntity.class);
+                            mDatabaseInstance.taskModel().insertTask(task);
+//                            tasks.add(task);
                         }
                     }
                     if (mInputStreamReader != null) {
@@ -170,7 +178,7 @@ public class NetworkProcessor {
                 Log.i(LOG_TAG, "getTasks onPostExecute");
                 if (mTasksRequestListener != null) {
                     if (tasks != null && !tasks.isEmpty()) {
-                        mTasksRequestListener.onTasksRequestSuccess(tasks);
+                        mTasksRequestListener.onTasksRequestSuccess();
                     } else {
                         mTasksRequestListener.onTasksRequestFailure();
                     }
@@ -218,8 +226,9 @@ public class NetworkProcessor {
                             mBufferedInputStream = new BufferedInputStream(httpsURLConnection.getInputStream());
                             mInputStreamReader = new InputStreamReader(mBufferedInputStream);
                             Gson gson = new Gson();
-                            Profile profile = gson.fromJson(mInputStreamReader, Profile.class);
-                            profiles.add(profile);
+                            ProfileEntity profile = gson.fromJson(mInputStreamReader, ProfileEntity.class);
+                            mDatabaseInstance.profileModel().insertProfile(profile);
+//                            profiles.add(profile);
                         }
                     }
                     if (mInputStreamReader != null) {
@@ -243,7 +252,7 @@ public class NetworkProcessor {
                 Log.i(LOG_TAG, "getProfiles onPostExecute");
                 if (mProfileRequestListener != null) {
                     if (profiles != null && !profiles.isEmpty()) {
-                        mProfileRequestListener.onProfilesRequestsSuccess(profiles);
+                        mProfileRequestListener.onProfilesRequestsSuccess();
                     } else {
                         mProfileRequestListener.onProfilesRequestFailure();
                     }
@@ -253,19 +262,19 @@ public class NetworkProcessor {
     }
 
     public interface FeedRequestListener {
-        void onFeedRequestSuccess(ArrayList<Feed> feeds);
+        void onFeedRequestSuccess();
 
         void onFeedRequestFailure();
     }
 
     public interface TasksRequestListener {
-        void onTasksRequestSuccess(ArrayList<Task> tasks);
+        void onTasksRequestSuccess();
 
         void onTasksRequestFailure();
     }
 
     public interface ProfileRequestListener {
-        void onProfilesRequestsSuccess(ArrayList<Profile> profiles);
+        void onProfilesRequestsSuccess();
 
         void onProfilesRequestFailure();
     }

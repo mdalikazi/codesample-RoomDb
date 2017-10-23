@@ -20,8 +20,11 @@ import com.alikazi.cc_airtasker.R;
 import com.alikazi.cc_airtasker.conf.AppConf;
 import com.alikazi.cc_airtasker.conf.NetConstants;
 import com.alikazi.cc_airtasker.db.AppDatabase;
+import com.alikazi.cc_airtasker.db.DbHelper;
 import com.alikazi.cc_airtasker.db.FakeDataDb;
 import com.alikazi.cc_airtasker.db.entities.FeedEntity;
+import com.alikazi.cc_airtasker.db.entities.ProfileEntity;
+import com.alikazi.cc_airtasker.db.entities.TaskEntity;
 import com.alikazi.cc_airtasker.models.Feed;
 import com.alikazi.cc_airtasker.models.Profile;
 import com.alikazi.cc_airtasker.models.Task;
@@ -29,7 +32,6 @@ import com.alikazi.cc_airtasker.network.NetworkProcessor;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -50,9 +52,9 @@ public class MainActivity extends AppCompatActivity
     private static final int SNACKBAR_NO_INTERNET = 5;
 
     // Logic
-    private ArrayList<Feed> mFeed;
-    private ArrayList<Task> mTasks;
-    private ArrayList<Profile> mProfiles;
+    private ArrayList<FeedEntity> mFeed;
+    private ArrayList<TaskEntity> mTasks;
+    private ArrayList<ProfileEntity> mProfiles;
     private LinkedHashSet<Integer> mTaskIds;
     private LinkedHashSet<Integer> mProfileIds;
     private FeedAdapter mFeedAdapter;
@@ -73,7 +75,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         initUi();
-        mNetworkProcessor = new NetworkProcessor(this, this,this, this);
+        mDbInstance = AppDatabase.getDatabaseInstance(this);
+        DbHelper.clearDbOnInit(mDbInstance);
+        mNetworkProcessor = new NetworkProcessor(this, mDbInstance,
+                this,this, this);
+
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,15 +101,7 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mFeedAdapter);
         setupRecyclerScrollListener();
         showHideEmptyListMessage(true);
-
-        mDbInstance = AppDatabase.getDatabaseInstance(this);
-        FakeDataDb.initDbAsync(mDbInstance, this);
-
-    }
-
-    @Override
-    public void onFakeDbCreationComplete() {
-        fetchFakeDbData();
+//        FakeDataDb.initDbFakeDataAsync(mDbInstance, this);
     }
 
     private void initUi() {
@@ -114,13 +112,17 @@ public class MainActivity extends AppCompatActivity
         mSwipeRefreshLayout = findViewById(R.id.main_swipe_refresh_layout);
     }
 
+    @Override
+    public void onFakeDbCreationComplete() {
+        fetchFakeDbData();
+    }
+
     private void fetchFakeDbData() {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
                 List<FeedEntity> feedEntities = mDbInstance.feedModel().loadAllFeed();
                 for (FeedEntity feedEntity : feedEntities) {
-
                     Log.d(LOG_TAG, "feedEntity.id: " + feedEntity.id);
                     Log.d(LOG_TAG, "feedEntity.task_id: " + feedEntity.task_id);
                     Log.d(LOG_TAG, "feedEntity.profile_id: " + feedEntity.profile_id);
@@ -233,10 +235,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFeedRequestSuccess(ArrayList<Feed> feed) {
+    public void onFeedRequestSuccess() {
         Log.i(LOG_TAG, "onFeedRequestSuccess");
         mFeed = new ArrayList<>();
-        mFeed = feed;
+        mFeed = (ArrayList) mDbInstance.feedModel().loadAllFeed();
         processTaskAndProfileIds();
     }
 
@@ -251,9 +253,9 @@ public class MainActivity extends AppCompatActivity
         mProfileIds = new LinkedHashSet<>();
         mTaskIds.clear();
         mProfileIds.clear();
-        for (Feed feedItem : mFeed) {
-            mTaskIds.add(feedItem.getTask_id());
-            mProfileIds.add(feedItem.getProfile_id());
+        for (FeedEntity feedItem : mFeed) {
+            mTaskIds.add(feedItem.task_id);
+            mProfileIds.add(feedItem.profile_id);
         }
 
         requestTasksFromServer(mTaskIds);
@@ -268,10 +270,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onTasksRequestSuccess(ArrayList<Task> tasks) {
+    public void onTasksRequestSuccess() {
         Log.i(LOG_TAG, "onTasksRequestSuccess");
         mTasks = new ArrayList<>();
-        mTasks = tasks;
+        mTasks = (ArrayList) mDbInstance.taskModel().loadAllTasks();
         requestProfilesFromServer(mProfileIds);
     }
 
@@ -290,14 +292,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onProfilesRequestsSuccess(ArrayList<Profile> profiles) {
+    public void onProfilesRequestsSuccess() {
         Log.i(LOG_TAG, "onProfilesRequestsSuccess");
         showHideProgressBar(false);
         showHideSwipeRefreshing(false);
         showHideEmptyListMessage(false);
         processSnackbar(SNACKBAR_DONE);
         mProfiles = new ArrayList<>();
-        mProfiles = profiles;
+        mProfiles = (ArrayList) mDbInstance.profileModel().loadAllProfiles();
         processFeedWithTasksAndProfiles();
         mFeedAdapter.setFeedList(mFeed);
     }
@@ -322,48 +324,46 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void processFeedWithTasksAndProfiles() {
-        for (Feed feed : mFeed) {
+        for (FeedEntity feed : mFeed) {
             // Convert ISO date to Java date
             try {
                 SimpleDateFormat isoDateFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_ISO, Locale.US);
-                Date javaDate = isoDateFormat.parse(feed.getCreated_at());
-                feed.setCreatedAtJavaDate(javaDate);
+//                feed.createdAtJavaDate = isoDateFormat.parse(feed.created_at);
             } catch (Exception e) {
                 Log.d(LOG_TAG, "Exception parsing iso date: " + e.toString());
             }
 
-            for (Task task : mTasks){
-                if (feed.getTask_id() == task.getId()) {
+            for (TaskEntity task : mTasks){
+                if (feed.task_id == task.id) {
 
                     // Replace {task_name} with data from task object
-                    String feedText = feed.getText();
-                    feedText = feedText.replace(NetConstants.JSON_KEY_TASK_NAME, task.getName());
-                    feed.setProcessedText(feedText);
+                    /*String feedText = feed.text;
+                    feedText = feedText.replace(NetConstants.JSON_KEY_TASK_NAME, task.name);
+                    feed.processedText = feedText;
 
                     // Set transient task object on feed
-                    feed.setTask(task);
+                    feed.task = task;*/
                 }
             }
 
-            for (Profile profile : mProfiles) {
+            for (ProfileEntity profile : mProfiles) {
 
                 // Convert mini url of profile photo to full url
                 Uri.Builder uriBuilder = new Uri.Builder()
                         .scheme(NetConstants.SCHEME_HTTPS)
                         .authority(NetConstants.STAGE_AIRTASKER)
                         .appendPath(NetConstants.ANDROID_CODE_TEST);
-                String imageUrl = uriBuilder.build().toString() + profile.getAvatar_mini_url();
-                profile.setAvatarFullUrl(imageUrl);
+//                profile.avatarFullUrl = uriBuilder.build().toString() + profile.avatar_mini_url;
 
-                if (feed.getProfile_id() == profile.getId()) {
+                if (feed.profile_id == profile.id) {
 
                     // Replace {profile_name} with data from profile object
-                    String feedText = feed.getProcessedText();
-                    feedText = feedText.replace(NetConstants.JSON_KEY_PROFILE_NAME, profile.getFirst_name());
-                    feed.setProcessedText(feedText);
+                    /*String feedText = feed.processedText;
+                    feedText = feedText.replace(NetConstants.JSON_KEY_PROFILE_NAME, profile.first_name);
+                    feed.processedText = feedText;
 
                     // Set transient profile object on feed
-                    feed.setProfile(profile);
+                    feed.profile = profile;*/
                 }
             }
         }
