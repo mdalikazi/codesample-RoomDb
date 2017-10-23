@@ -13,9 +13,6 @@ import com.alikazi.cc_airtasker.db.AppDatabase;
 import com.alikazi.cc_airtasker.db.entities.FeedEntity;
 import com.alikazi.cc_airtasker.db.entities.ProfileEntity;
 import com.alikazi.cc_airtasker.db.entities.TaskEntity;
-import com.alikazi.cc_airtasker.models.Feed;
-import com.alikazi.cc_airtasker.models.Profile;
-import com.alikazi.cc_airtasker.models.Task;
 import com.google.gson.Gson;
 
 import java.io.BufferedInputStream;
@@ -56,7 +53,7 @@ public class NetworkProcessor {
 
     @SuppressLint("StaticFieldLeak")
     public void getFeed() {
-        new AsyncTask<Void, Void, ArrayList<Feed>>() {
+        new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected void onPreExecute() {
                 Log.i(LOG_TAG, "getFeed onPreExecute");
@@ -68,7 +65,7 @@ public class NetworkProcessor {
             }
 
             @Override
-            protected ArrayList<Feed> doInBackground(Void... voids) {
+            protected Boolean doInBackground(Void... voids) {
                 Log.i(LOG_TAG, "getFeed doInBackground");
                 ConnectionHelper connectionHelper = new ConnectionHelper();
                 try {
@@ -95,18 +92,18 @@ public class NetworkProcessor {
                     if (mFeedRequestCallbacksListener != null) {
                         mFeedRequestCallbacksListener.onFeedRequestFailure();
                     }
+                    return false;
                 }
-                return null;
+                return true;
             }
 
             @Override
-            protected void onPostExecute(ArrayList<Feed> feed) {
+            protected void onPostExecute(Boolean isSuccess) {
                 Log.i(LOG_TAG, "getFeed onPostExecute");
                 if (mFeedRequestCallbacksListener != null) {
-                    if (feed != null && !feed.isEmpty()) {
+//                    if (feed != null && !feed.isEmpty()) {
+                    if (isSuccess) {
                         mFeedRequestCallbacksListener.onFeedRequestSuccess();
-                    } else {
-                        mFeedRequestCallbacksListener.onFeedRequestFailure();
                     }
                 }
             }
@@ -116,7 +113,7 @@ public class NetworkProcessor {
     @SuppressLint("StaticFieldLeak")
     public void getTasks(final LinkedHashSet<Integer> taskIds) {
         final ArrayList<URL> tasksUrlList = new ArrayList<>();
-        new AsyncTask<Void, Void, ArrayList<Task>>() {
+        new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected void onPreExecute() {
                 Log.i(LOG_TAG, "getTasks onPreExecute");
@@ -141,9 +138,9 @@ public class NetworkProcessor {
             }
 
             @Override
-            protected ArrayList<Task> doInBackground(Void... voids) {
+            protected Boolean doInBackground(Void... voids) {
                 Log.i(LOG_TAG, "getTasks doInBackground");
-                ArrayList<Task> tasks = new ArrayList<>();
+//                ArrayList<Task> tasks = new ArrayList<>();
                 ConnectionHelper connectionHelper = new ConnectionHelper();
                 try {
                     for (URL taskUrl : tasksUrlList) {
@@ -168,19 +165,18 @@ public class NetworkProcessor {
                     if (mTasksRequestListener != null) {
                         mTasksRequestListener.onTasksRequestFailure();
                     }
-                    return null;
+                    return false;
                 }
-                return tasks;
+                return true;
             }
 
             @Override
-            protected void onPostExecute(ArrayList<Task> tasks) {
+            protected void onPostExecute(Boolean isSuccess) {
                 Log.i(LOG_TAG, "getTasks onPostExecute");
                 if (mTasksRequestListener != null) {
-                    if (tasks != null && !tasks.isEmpty()) {
+//                    if (tasks != null && !tasks.isEmpty()) {
+                    if (isSuccess) {
                         mTasksRequestListener.onTasksRequestSuccess();
-                    } else {
-                        mTasksRequestListener.onTasksRequestFailure();
                     }
                 }
             }
@@ -190,7 +186,7 @@ public class NetworkProcessor {
     @SuppressLint("StaticFieldLeak")
     public void getProfiles(final LinkedHashSet<Integer> profileIds) {
         final ArrayList<URL> profilesUrlList = new ArrayList<>();
-        new AsyncTask<Void, Void, ArrayList<Profile>>() {
+        new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected void onPreExecute() {
                 Log.i(LOG_TAG, "getProfiles onPreExecute");
@@ -215,9 +211,9 @@ public class NetworkProcessor {
             }
 
             @Override
-            protected ArrayList<Profile> doInBackground(Void... voids) {
+            protected Boolean doInBackground(Void... voids) {
                 Log.i(LOG_TAG, "getProfiles doInBackground");
-                ArrayList<Profile> profiles = new ArrayList<>();
+//                ArrayList<Profile> profiles = new ArrayList<>();
                 ConnectionHelper connectionHelper = new ConnectionHelper();
                 try {
                     for (URL profileUrl : profilesUrlList) {
@@ -242,19 +238,18 @@ public class NetworkProcessor {
                     if (mProfileRequestListener != null) {
                         mProfileRequestListener.onProfilesRequestFailure();
                     }
-                    return null;
+                    return false;
                 }
-                return profiles;
+                return true;
             }
 
             @Override
-            protected void onPostExecute(ArrayList<Profile> profiles) {
+            protected void onPostExecute(Boolean isSuccess) {
                 Log.i(LOG_TAG, "getProfiles onPostExecute");
                 if (mProfileRequestListener != null) {
-                    if (profiles != null && !profiles.isEmpty()) {
+//                    if (profiles != null && !profiles.isEmpty()) {
+                    if (isSuccess) {
                         mProfileRequestListener.onProfilesRequestsSuccess();
-                    } else {
-                        mProfileRequestListener.onProfilesRequestFailure();
                     }
                 }
             }
