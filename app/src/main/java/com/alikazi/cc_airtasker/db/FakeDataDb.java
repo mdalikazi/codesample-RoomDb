@@ -26,7 +26,7 @@ public class FakeDataDb {
     private static class PopulateDbFakeDataAsync extends AsyncTask<Void, Void, Void> {
 
         private final AppDatabase mDb;
-        private FakeDbCallbacksListener mFakeDbCallbacksListener;
+        private final FakeDbCallbacksListener mFakeDbCallbacksListener;
 
         public PopulateDbFakeDataAsync(AppDatabase db, FakeDbCallbacksListener fakeDbCallbacksListener) {
             mDb = db;

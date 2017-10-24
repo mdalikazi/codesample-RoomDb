@@ -24,7 +24,7 @@
             android:contentDescription="@string/default_image_content_description"/>
 
         <TextView
-            android:id="@+id/list_item_feed_task_description"
+            android:id="@+id/list_item_feed_task_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/list_item_feed_profile_photo"
@@ -46,6 +46,7 @@
             android:id="@+id/list_item_feed_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignBottom="@+id/list_item_feed_profile_photo"
             tools:text="comment"/>
