@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         initUi();
-        mDbInstance = AppDatabase.getDatabaseInstance(this);
+        mDbInstance = AppDatabase.getDatabaseInstance(this, true);
         DbHelper.clearDbOnInit(mDbInstance);
         mNetworkProcessor = new NetworkProcessor(this, mDbInstance,
                 this,this, this);

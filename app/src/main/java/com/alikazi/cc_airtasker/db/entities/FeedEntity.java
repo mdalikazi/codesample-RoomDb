@@ -20,16 +20,14 @@ import com.alikazi.cc_airtasker.db.type_converters.DateConverter;
                 childColumns = "profile_id",
                 onDelete = ForeignKey.CASCADE)})*/
 @Entity
-@TypeConverters(DateConverter.class)
+
 public class FeedEntity {
     @PrimaryKey(autoGenerate = true)
     public int id;
-//    @ColumnInfo(name = "task_id")
     public int task_id;
-//    @ColumnInfo(name = "profile_id")
     public int profile_id;
     public String text;
-    public String created_at;
+    public @TypeConverters(DateConverter.class) String created_at;
     public String event;
 
 }

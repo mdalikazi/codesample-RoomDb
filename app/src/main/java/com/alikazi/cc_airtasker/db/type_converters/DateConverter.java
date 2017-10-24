@@ -18,12 +18,33 @@ public class DateConverter {
     private static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
 
     @TypeConverter
-    public static Date toJavaDate(String isoDate) {
+    public static Date fromString(String isoDate) {
+        Log.d(LOG_TAG, "fromDate: ");
+        if (isoDate == null) {
+            return null;
+        }
+
         SimpleDateFormat isoDateFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_ISO, Locale.getDefault());
         try {
             return isoDateFormat.parse(isoDate);
         } catch (Exception e) {
-            Log.d(LOG_TAG, "Exception parsing isoDate: " + e.toString());
+            Log.d(LOG_TAG, "Exception parsing isoDate to Date: " + e.toString());
+            return null;
+        }
+    }
+
+    @TypeConverter
+    public static String toString(Date date) {
+        Log.d(LOG_TAG, "toDate: ");
+        if (date == null) {
+            return null;
+        }
+
+        SimpleDateFormat isoDateFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_ISO, Locale.getDefault());
+        try {
+            return isoDateFormat.format(date);
+        } catch (Exception e) {
+            Log.d(LOG_TAG, "Exception formatting Date to isoDate: " + e.toString());
             return null;
         }
     }
