@@ -8,6 +8,7 @@ import android.arch.persistence.room.TypeConverters;
 import android.arch.persistence.room.Update;
 
 import com.alikazi.cc_airtasker.db.entities.FeedEntity;
+import com.alikazi.cc_airtasker.db.entities.FeedWithTaskAndProfile;
 import com.alikazi.cc_airtasker.db.type_converters.DateConverter;
 
 import java.util.List;
@@ -26,14 +27,11 @@ public interface FeedDao {
     @Query("SELECT * FROM FeedEntity WHERE id = :id")
     FeedEntity loadFeedById(int id);
 
-    @Query("SELECT * FROM FeedEntity " +
-            "INNER JOIN TaskEntity ON TaskEntity.id = FeedEntity.task_id")
-    List<FeedEntity> loadFeedByTaskId();
-
-    @Query("SELECT * FROM FeedEntity " +
+    /*@Query("SELECT * FROM FeedEntity " +
             "INNER JOIN TaskEntity ON TaskEntity.id = FeedEntity.task_id " +
-            "INNER JOIN ProfileEntity ON ProfileEntity.id = FeedEntity.profile_id")
-    List<FeedEntity> loadFeedByTaskAndProfileId();
+            "INNER JOIN ProfileEntity ON ProfileEntity.id = FeedEntity.profile_id")*/
+    @Query("SELECT * FROM FeedEntity")
+    List<FeedWithTaskAndProfile> loadFeedWithTaskAndProfile();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertFeed(FeedEntity feed);

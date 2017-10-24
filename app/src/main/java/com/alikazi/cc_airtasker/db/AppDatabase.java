@@ -30,6 +30,12 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract TaskDao taskModel();
     public abstract ProfileDao profileModel();
 
+    /**
+     *
+     * @param context
+     * @param inMemory true -> in memory, false -> on disk
+     * @return
+     */
     public static AppDatabase getDatabaseInstance(Context context, boolean inMemory) {
         if (DATABASE_INSTANCE == null) {
             RoomDatabase.Builder<AppDatabase> databaseBuilder;

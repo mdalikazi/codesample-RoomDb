@@ -14,9 +14,14 @@ import android.widget.TextView;
 
 import com.alikazi.cc_airtasker.R;
 import com.alikazi.cc_airtasker.conf.AppConf;
-import com.alikazi.cc_airtasker.db.entities.FeedEntity;
+import com.alikazi.cc_airtasker.db.entities.FeedWithTaskAndProfile;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by kazi_ on 10/18/2017.
@@ -30,13 +35,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
     private boolean mAnimate;
-    private ArrayList<FeedEntity> mFeedList;
+    private ArrayList<FeedWithTaskAndProfile> mFeedList;
 
     public FeedAdapter(Context context) {
         mContext = context;
     }
 
-    public void setFeedList(ArrayList<FeedEntity> feedList) {
+    public void setFeedList(ArrayList<FeedWithTaskAndProfile> feedList) {
         Log.i(LOG_TAG, "setFeedList");
         mAnimate = true;
         mFeedList = new ArrayList<>();
@@ -61,25 +66,26 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         animateList(holder.itemView);
         int adapterPostion = holder.getAdapterPosition();
+        // Such a switch is useful to have different view types in the adapter.
+        // In our case we have only one view type
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_ITEM:
                 FeedListItemViewHolder listItemViewHolder = (FeedListItemViewHolder) holder;
-                FeedEntity feedItem = mFeedList.get(adapterPostion);
+                FeedWithTaskAndProfile feedItem = mFeedList.get(adapterPostion);
 
-                /*Glide.with(mContext)
-                        .load(feedItem.getProfile().getAvatarFullUrl())
+                Glide.with(mContext)
+                        .load(feedItem.profiles.get(0).avatarFullUrl)
                         .transition(new DrawableTransitionOptions().crossFade())
                         .apply(new RequestOptions().placeholder(R.mipmap.ic_person_black_24dp))
-                        .into(listItemViewHolder.profilePhotoImageView);*/
+                        .into(listItemViewHolder.profilePhotoImageView);
 
-                listItemViewHolder.taskDescriptionTextView.setText(feedItem.text);
-                listItemViewHolder.feedTypeTextView.setText(feedItem.event);
+                listItemViewHolder.taskNameTextView.setText(feedItem.tasks.get(0).name);
+                listItemViewHolder.feedTypeTextView.setText(feedItem.feed.event);
 
-//                SimpleDateFormat dayTimeFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_DAY_TIME, Locale.US);
-//                String dayTimeDateString = dayTimeFormat.format(feedItem.getCreatedAtJavaDate());
-//                listItemViewHolder.dateTextView.setText(dayTimeDateString);
-                
-                listItemViewHolder.dateTextView.setText(feedItem.created_at);
+                SimpleDateFormat dayTimeFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_DAY_TIME, Locale.US);
+                String dayTimeDateString = dayTimeFormat.format(feedItem.feed.createdAtJavaDate);
+                listItemViewHolder.dateTextView.setText(dayTimeDateString);
+
                 break;
                 //TODO ADD COMMENTS
                 //TODO ADD DIALOG WITH DETAIL
@@ -99,7 +105,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         if (mFeedList != null) {
-            if (mFeedList.get(position) instanceof FeedEntity) {
+            if (mFeedList.get(position) instanceof FeedWithTaskAndProfile) {
                 return VIEW_TYPE_ITEM;
             }
         }
@@ -122,6 +128,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                // Animate only once at the start
                 mAnimate = false;
             }
 
@@ -136,14 +143,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private class FeedListItemViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView profilePhotoImageView;
-        private TextView taskDescriptionTextView;
+        private TextView taskNameTextView;
         private TextView dateTextView;
         private TextView feedTypeTextView;
 
         public FeedListItemViewHolder(View itemView) {
             super(itemView);
             profilePhotoImageView = itemView.findViewById(R.id.list_item_feed_profile_photo);
-            taskDescriptionTextView = itemView.findViewById(R.id.list_item_feed_task_description);
+            taskNameTextView = itemView.findViewById(R.id.list_item_feed_task_name);
             dateTextView = itemView.findViewById(R.id.list_item_feed_date);
             feedTypeTextView = itemView.findViewById(R.id.list_item_feed_type);
         }
