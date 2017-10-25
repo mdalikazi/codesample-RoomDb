@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
 
-    private static final boolean SIMULATE_SLOW_INTERNET = true;
+    private static final boolean SIMULATE_SLOW_INTERNET = false;
 
     private static final int SNACKBAR_FEED = 0;
     private static final int SNACKBAR_TASKS = 1;

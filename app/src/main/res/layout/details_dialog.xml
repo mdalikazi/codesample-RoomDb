@@ -33,7 +33,7 @@
         <GridView
             android:id="@+id/details_dialog_rating_grid_view"
             android:layout_width="70dp"
-            android:layout_height="18dp"
+            android:layout_height="16dp"
             android:layout_below="@+id/details_dialog_profile_photo"
             android:numColumns="5"
             android:scrollbars="none"
