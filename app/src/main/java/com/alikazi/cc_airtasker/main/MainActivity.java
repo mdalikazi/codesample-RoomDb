@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity
 
     private static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
 
+    private static final boolean SIMULATE_SLOW_INTERNET = true;
+
     private static final int SNACKBAR_FEED = 0;
     private static final int SNACKBAR_TASKS = 1;
     private static final int SNACKBAR_PROFILE = 2;
@@ -194,6 +196,16 @@ public class MainActivity extends AppCompatActivity
         mSnackbar.show();
     }
 
+    private void causeDelay() {
+        if (SIMULATE_SLOW_INTERNET) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                Log.d(LOG_TAG, "Exception with causeDelay: " + e.toString());
+            }
+        }
+    }
+
     /**
      * Scroll listener to show and hide FAB appropriately
      */
@@ -227,6 +239,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFeedRequestSuccess() {
         Log.i(LOG_TAG, "onFeedRequestSuccess");
+        causeDelay();
         // Now we use task_id and profile_id to create task and profile requests
         ArrayList<FeedEntity> feed = (ArrayList<FeedEntity>) mDbInstance.feedModel().loadAllFeed();
         processTaskAndProfileIds(feed);
@@ -269,6 +282,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onTasksRequestSuccess() {
         Log.i(LOG_TAG, "onTasksRequestSuccess");
+        causeDelay();
         // Then we request profiles
         requestProfilesFromServer(mProfileIds);
     }
@@ -290,6 +304,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onProfilesRequestsSuccess() {
         Log.i(LOG_TAG, "onProfilesRequestsSuccess");
+        causeDelay();
         showHideProgressBar(false);
         showHideSwipeRefreshing(false);
         showHideEmptyListMessage(false);

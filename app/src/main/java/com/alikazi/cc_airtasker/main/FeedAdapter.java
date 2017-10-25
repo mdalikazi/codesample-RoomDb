@@ -101,7 +101,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 });
 
                 break;
-                //TODO ADD DIALOG WITH DETAIL
                 //TODO FIX MAIN THREAD ISSUE
                 //TODO ADD SPLASHSCREENS
         }
