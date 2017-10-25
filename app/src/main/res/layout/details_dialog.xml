@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="10dp">
+
+    <TextView
+        style="@style/CustomDialogTitle"
+        android:id="@+id/details_dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        tools:text="Mystery Shopper Rockdale NSW"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <ImageView
+            android:id="@+id/details_dialog_profile_photo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/default_image_content_description"
+            android:scaleType="centerCrop"
+            tools:src="@mipmap/ic_person_black_24dp"/>
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/details_dialog_profile_photo"
+            android:layout_toRightOf="@+id/details_dialog_profile_photo">
+
+            <TextView
+                android:id="@+id/details_dialog_description"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:text="1. Visit a shop anonymously as an undercover customer. \n2. Make two short enquiries in the same shop. \n3. Fill in a questionnaire. \n4. Report by phone."/>
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </RelativeLayout>
+
+</LinearLayout>

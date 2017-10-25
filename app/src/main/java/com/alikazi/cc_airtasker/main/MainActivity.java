@@ -30,9 +30,9 @@ import com.alikazi.cc_airtasker.network.NetworkProcessor;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Locale;
 
+@SuppressWarnings("DanglingJavadoc")
 public class MainActivity extends AppCompatActivity
         implements NetworkProcessor.FeedRequestListener,
         NetworkProcessor.TasksRequestListener,
@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity
         FakeDataDb.FakeDbCallbacksListener {
 
     private static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
+
+    private static final boolean SIMULATE_SLOW_INTERNET = true;
 
     private static final int SNACKBAR_FEED = 0;
     private static final int SNACKBAR_TASKS = 1;
@@ -118,16 +120,19 @@ public class MainActivity extends AppCompatActivity
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                List<FeedEntity> feedEntities = mDbInstance.feedModel().loadAllFeed();
-                for (FeedEntity feedEntity : feedEntities) {
-                    Log.d(LOG_TAG, "feedEntity.id: " + feedEntity.id);
-                    Log.d(LOG_TAG, "feedEntity.task_id: " + feedEntity.task_id);
-                    Log.d(LOG_TAG, "feedEntity.profile_id: " + feedEntity.profile_id);
-                    Log.d(LOG_TAG, "feedEntity.event: " + feedEntity.event);
-                    Log.d(LOG_TAG, "feedEntity.created_at: " + feedEntity.created_at);
-                    Log.d(LOG_TAG, "feedEntity.text: " + feedEntity.text);
+                ArrayList<FeedWithTaskAndProfile> feedWithTasksAndProfiles =
+                        (ArrayList<FeedWithTaskAndProfile>) mDbInstance.feedModel().loadFeedWithTaskAndProfile();
+                populateAdapter(feedWithTasksAndProfiles);
+
+                /*for (FeedWithTaskAndProfile feedEntity : feedWithTasksAndProfiles) {
+                    Log.d(LOG_TAG, "feedEntity.id: " + feedEntity.feed.id);
+                    Log.d(LOG_TAG, "feedEntity.task_id: " + feedEntity.feed.task_id);
+                    Log.d(LOG_TAG, "feedEntity.profile_id: " + feedEntity.feed.profile_id);
+                    Log.d(LOG_TAG, "feedEntity.event: " + feedEntity.feed.event);
+                    Log.d(LOG_TAG, "feedEntity.created_at: " + feedEntity.feed.created_at);
+                    Log.d(LOG_TAG, "feedEntity.text: " + feedEntity.feed.text);
                     Log.d(LOG_TAG, "-----------------------------------------------------");
-                }
+                }*/
             }
         });
     }
@@ -191,6 +196,16 @@ public class MainActivity extends AppCompatActivity
         mSnackbar.show();
     }
 
+    private void causeDelay() {
+        if (SIMULATE_SLOW_INTERNET) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                Log.d(LOG_TAG, "Exception with causeDelay: " + e.toString());
+            }
+        }
+    }
+
     /**
      * Scroll listener to show and hide FAB appropriately
      */
@@ -224,6 +239,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFeedRequestSuccess() {
         Log.i(LOG_TAG, "onFeedRequestSuccess");
+        causeDelay();
         // Now we use task_id and profile_id to create task and profile requests
         ArrayList<FeedEntity> feed = (ArrayList<FeedEntity>) mDbInstance.feedModel().loadAllFeed();
         processTaskAndProfileIds(feed);
@@ -266,6 +282,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onTasksRequestSuccess() {
         Log.i(LOG_TAG, "onTasksRequestSuccess");
+        causeDelay();
         // Then we request profiles
         requestProfilesFromServer(mProfileIds);
     }
@@ -287,6 +304,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onProfilesRequestsSuccess() {
         Log.i(LOG_TAG, "onProfilesRequestsSuccess");
+        causeDelay();
         showHideProgressBar(false);
         showHideSwipeRefreshing(false);
         showHideEmptyListMessage(false);
@@ -320,8 +338,6 @@ public class MainActivity extends AppCompatActivity
     private void populateAdapter(ArrayList<FeedWithTaskAndProfile> feed) {
         mFeedAdapter.setFeedList(feed);
     }
-
-    @SuppressWarnings("DanglingJavadoc")
 
     /**
      * Makes all the necessary conversions on feed, task and profile before populating adapter

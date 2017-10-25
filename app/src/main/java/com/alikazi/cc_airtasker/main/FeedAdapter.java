@@ -1,6 +1,6 @@
 package com.alikazi.cc_airtasker.main;
 
-import android.content.Context;
+import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,12 +33,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int VIEW_TYPE_ITEM = 0;
 
-    private Context mContext;
+    private Activity mActivityContext;
     private boolean mAnimate;
     private ArrayList<FeedWithTaskAndProfile> mFeedList;
 
-    public FeedAdapter(Context context) {
-        mContext = context;
+    public FeedAdapter(Activity activityContext) {
+        mActivityContext = activityContext;
     }
 
     public void setFeedList(ArrayList<FeedWithTaskAndProfile> feedList) {
@@ -55,7 +55,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         View view;
         switch (viewType) {
             case VIEW_TYPE_ITEM:
-                view = LayoutInflater.from(mContext).inflate(R.layout.list_item_feed, parent, false);
+                view = LayoutInflater.from(mActivityContext).inflate(R.layout.list_item_feed, parent, false);
                 return new FeedListItemViewHolder(view);
             default:
                 throw new RuntimeException("There are invalid view types in FeedAdapter!");
@@ -73,22 +73,35 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 FeedListItemViewHolder listItemViewHolder = (FeedListItemViewHolder) holder;
                 FeedWithTaskAndProfile feedItem = mFeedList.get(adapterPostion);
 
-                Glide.with(mContext)
-                        .load(feedItem.profiles.get(0).avatarFullUrl)
+                final String photoUrl = feedItem.profiles.get(0).avatarFullUrl;
+                final String taskName = feedItem.tasks.get(0).name;
+                final String description = feedItem.tasks.get(0).description;
+                final boolean assigned = feedItem.tasks.get(0).state.contentEquals("assigned");
+
+                Glide.with(mActivityContext)
+                        .load(photoUrl)
                         .transition(new DrawableTransitionOptions().crossFade())
                         .apply(new RequestOptions().placeholder(R.mipmap.ic_person_black_24dp))
                         .into(listItemViewHolder.profilePhotoImageView);
 
-                listItemViewHolder.taskNameTextView.setText(feedItem.tasks.get(0).name);
+                listItemViewHolder.taskNameTextView.setText(taskName);
                 listItemViewHolder.feedTypeTextView.setText(feedItem.feed.event);
 
                 SimpleDateFormat dayTimeFormat = new SimpleDateFormat(AppConf.DATE_FORMAT_DAY_TIME, Locale.US);
                 String dayTimeDateString = dayTimeFormat.format(feedItem.feed.createdAtJavaDate);
                 listItemViewHolder.dateTextView.setText(dayTimeDateString);
 
+                listItemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        final DetailsDialogFragment detailsDialogFragment =
+                                DetailsDialogFragment.newInstance(taskName, photoUrl, description, assigned);
+                        detailsDialogFragment.show(mActivityContext.getFragmentManager(), "detailDialog");
+                    }
+                });
+
                 break;
-                //TODO ADD COMMENTS
-                //TODO ADD DIALOG WITH DETAIL
+                //TODO FIX MAIN THREAD ISSUE
                 //TODO ADD SPLASHSCREENS
         }
     }
