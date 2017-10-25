@@ -10,7 +10,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 26
         versionCode commitCount
-        versionName "1.2"
+        versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         // Write out the current schema of Room
         javaCompileOptions {
