@@ -21,10 +21,20 @@
             android:layout_marginRight="10dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:contentDescription="@string/default_image_content_description"/>
+            android:contentDescription="@string/default_image_content_description"
+            tools:src="@mipmap/ic_person_black_24dp"/>
+
+        <GridView
+            android:id="@+id/list_item_feed_rating_grid_view"
+            android:layout_width="80dp"
+            android:layout_height="16dp"
+            android:layout_below="@+id/list_item_feed_profile_photo"
+            android:numColumns="5"
+            android:scrollbars="none"
+            tools:listitem="@layout/grid_item_star"/>
 
         <TextView
-            android:id="@+id/list_item_feed_task_description"
+            android:id="@+id/list_item_feed_task_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/list_item_feed_profile_photo"
@@ -46,9 +56,21 @@
             android:id="@+id/list_item_feed_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignBottom="@+id/list_item_feed_profile_photo"
             tools:text="comment"/>
+
+        <ImageView
+            android:id="@+id/list_item_feed_task_open_marker"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:tint="@color/color_task_open_list_marker"
+            android:src="@mipmap/ic_radio_button_checked_black_24dp"
+            android:contentDescription="@string/default_image_content_description"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 
