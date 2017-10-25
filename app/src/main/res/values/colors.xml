@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#FFAB00</color>
     <color name="color_list_divider">#E0E0E0</color>
+    <color name="task_open">#E1BEE7</color>
+    <color name="task_assigned">#C8E6C9</color>
 </resources>

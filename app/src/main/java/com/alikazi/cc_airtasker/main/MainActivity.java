@@ -30,9 +30,9 @@ import com.alikazi.cc_airtasker.network.NetworkProcessor;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Locale;
 
+@SuppressWarnings("DanglingJavadoc")
 public class MainActivity extends AppCompatActivity
         implements NetworkProcessor.FeedRequestListener,
         NetworkProcessor.TasksRequestListener,
@@ -118,16 +118,19 @@ public class MainActivity extends AppCompatActivity
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                List<FeedEntity> feedEntities = mDbInstance.feedModel().loadAllFeed();
-                for (FeedEntity feedEntity : feedEntities) {
-                    Log.d(LOG_TAG, "feedEntity.id: " + feedEntity.id);
-                    Log.d(LOG_TAG, "feedEntity.task_id: " + feedEntity.task_id);
-                    Log.d(LOG_TAG, "feedEntity.profile_id: " + feedEntity.profile_id);
-                    Log.d(LOG_TAG, "feedEntity.event: " + feedEntity.event);
-                    Log.d(LOG_TAG, "feedEntity.created_at: " + feedEntity.created_at);
-                    Log.d(LOG_TAG, "feedEntity.text: " + feedEntity.text);
+                ArrayList<FeedWithTaskAndProfile> feedWithTasksAndProfiles =
+                        (ArrayList<FeedWithTaskAndProfile>) mDbInstance.feedModel().loadFeedWithTaskAndProfile();
+                populateAdapter(feedWithTasksAndProfiles);
+
+                /*for (FeedWithTaskAndProfile feedEntity : feedWithTasksAndProfiles) {
+                    Log.d(LOG_TAG, "feedEntity.id: " + feedEntity.feed.id);
+                    Log.d(LOG_TAG, "feedEntity.task_id: " + feedEntity.feed.task_id);
+                    Log.d(LOG_TAG, "feedEntity.profile_id: " + feedEntity.feed.profile_id);
+                    Log.d(LOG_TAG, "feedEntity.event: " + feedEntity.feed.event);
+                    Log.d(LOG_TAG, "feedEntity.created_at: " + feedEntity.feed.created_at);
+                    Log.d(LOG_TAG, "feedEntity.text: " + feedEntity.feed.text);
                     Log.d(LOG_TAG, "-----------------------------------------------------");
-                }
+                }*/
             }
         });
     }
@@ -320,8 +323,6 @@ public class MainActivity extends AppCompatActivity
     private void populateAdapter(ArrayList<FeedWithTaskAndProfile> feed) {
         mFeedAdapter.setFeedList(feed);
     }
-
-    @SuppressWarnings("DanglingJavadoc")
 
     /**
      * Makes all the necessary conversions on feed, task and profile before populating adapter
