@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,13 +27,15 @@ public class DetailsDialogFragment extends DialogFragment {
     private static final String BUNDLE_EXTRA_PROFILE_PHOTO = "BUNDLE_EXTRA_PROFILE_PHOTO";
     private static final String BUNDLE_EXTRA_DESCRIPTION = "BUNDLE_EXTRA_DESCRIPTION";
     private static final String BUNDLE_EXTRA_ASSIGNED = "BUNDLE_EXTRA_ASSIGNED";
+    private static final String BUNDLE_EXTRA_RATING = "BUNDLE_EXTRA_RATING";
 
-    public static DetailsDialogFragment newInstance(String taskName, String photoUrl, String description, boolean assigned) {
+    public static DetailsDialogFragment newInstance(String taskName, String photoUrl, String description, int rating, boolean assigned) {
         DetailsDialogFragment detailsDialogFragment = new DetailsDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(BUNDLE_EXTRA_TITLE, taskName);
         bundle.putString(BUNDLE_EXTRA_PROFILE_PHOTO, photoUrl);
         bundle.putString(BUNDLE_EXTRA_DESCRIPTION, description);
+        bundle.putInt(BUNDLE_EXTRA_RATING, rating);
         bundle.putBoolean(BUNDLE_EXTRA_ASSIGNED, assigned);
         detailsDialogFragment.setArguments(bundle);
         return detailsDialogFragment;
@@ -46,15 +49,16 @@ public class DetailsDialogFragment extends DialogFragment {
         TextView title = detailView.findViewById(R.id.details_dialog_title);
         ImageView profilePhoto = detailView.findViewById(R.id.details_dialog_profile_photo);
         TextView description = detailView.findViewById(R.id.details_dialog_description);
+        GridView ratingGridView = detailView.findViewById(R.id.details_dialog_rating_grid_view);
 
         title.setText(getArguments().getString(BUNDLE_EXTRA_TITLE));
         description.setText(getArguments().getString(BUNDLE_EXTRA_DESCRIPTION));
 
         final boolean assigned = getArguments().getBoolean(BUNDLE_EXTRA_ASSIGNED);
         if (assigned) {
-            title.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.task_assigned));
+            title.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.color_task_assigned));
         } else {
-            title.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.task_open));
+            title.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.color_task_open));
         }
 
         Glide.with(getActivity())
@@ -63,6 +67,10 @@ public class DetailsDialogFragment extends DialogFragment {
                 .transition(new BitmapTransitionOptions().crossFade())
                 .load(getArguments().getString(BUNDLE_EXTRA_PROFILE_PHOTO))
                 .into(profilePhoto);
+
+        RatingAdapter ratingAdapter = new RatingAdapter(getActivity());
+        ratingAdapter.setRating(getArguments().getInt(BUNDLE_EXTRA_RATING));
+        ratingGridView.setAdapter(ratingAdapter);
 
         builder.setView(detailView);
 

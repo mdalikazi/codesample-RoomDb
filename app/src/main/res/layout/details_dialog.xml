@@ -21,14 +21,23 @@
 
         <ImageView
             android:id="@+id/details_dialog_profile_photo"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/default_image_content_description"
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_person_black_24dp"/>
+
+        <GridView
+            android:id="@+id/details_dialog_rating_grid_view"
+            android:layout_width="70dp"
+            android:layout_height="18dp"
+            android:layout_below="@+id/details_dialog_profile_photo"
+            android:numColumns="5"
+            android:scrollbars="none"
+            tools:listitem="@layout/grid_item_star"/>
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"

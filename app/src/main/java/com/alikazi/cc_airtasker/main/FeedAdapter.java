@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,9 +37,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Activity mActivityContext;
     private boolean mAnimate;
     private ArrayList<FeedWithTaskAndProfile> mFeedList;
+    private RatingAdapter mRatingAdapter;
 
     public FeedAdapter(Activity activityContext) {
         mActivityContext = activityContext;
+        mRatingAdapter = new RatingAdapter(activityContext);
     }
 
     public void setFeedList(ArrayList<FeedWithTaskAndProfile> feedList) {
@@ -76,6 +79,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 final String photoUrl = feedItem.profiles.get(0).avatarFullUrl;
                 final String taskName = feedItem.tasks.get(0).name;
                 final String description = feedItem.tasks.get(0).description;
+                final int rating = feedItem.profiles.get(0).rating;
                 final boolean assigned = feedItem.tasks.get(0).state.contentEquals("assigned");
 
                 Glide.with(mActivityContext)
@@ -95,13 +99,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     @Override
                     public void onClick(View view) {
                         final DetailsDialogFragment detailsDialogFragment =
-                                DetailsDialogFragment.newInstance(taskName, photoUrl, description, assigned);
+                                DetailsDialogFragment.newInstance(taskName, photoUrl, description, rating, assigned);
                         detailsDialogFragment.show(mActivityContext.getFragmentManager(), "detailDialog");
                     }
                 });
 
+                if (mRatingAdapter != null) {
+                    mRatingAdapter.setRating(rating);
+                    listItemViewHolder.ratingGridView.setAdapter(mRatingAdapter);
+                }
+
                 break;
-                //TODO FIX MAIN THREAD ISSUE
                 //TODO ADD SPLASHSCREENS
         }
     }
@@ -159,6 +167,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private TextView taskNameTextView;
         private TextView dateTextView;
         private TextView feedTypeTextView;
+        private GridView ratingGridView;
 
         public FeedListItemViewHolder(View itemView) {
             super(itemView);
@@ -166,6 +175,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             taskNameTextView = itemView.findViewById(R.id.list_item_feed_task_name);
             dateTextView = itemView.findViewById(R.id.list_item_feed_date);
             feedTypeTextView = itemView.findViewById(R.id.list_item_feed_type);
+            ratingGridView = itemView.findViewById(R.id.list_item_feed_rating_grid_view);
         }
     }
 }

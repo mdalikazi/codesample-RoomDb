@@ -21,7 +21,17 @@
             android:layout_marginRight="10dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:contentDescription="@string/default_image_content_description"/>
+            android:contentDescription="@string/default_image_content_description"
+            tools:src="@mipmap/ic_person_black_24dp"/>
+
+        <GridView
+            android:id="@+id/list_item_feed_rating_grid_view"
+            android:layout_width="80dp"
+            android:layout_height="20dp"
+            android:layout_below="@+id/list_item_feed_profile_photo"
+            android:numColumns="5"
+            android:scrollbars="none"
+            tools:listitem="@layout/grid_item_star"/>
 
         <TextView
             android:id="@+id/list_item_feed_task_name"
