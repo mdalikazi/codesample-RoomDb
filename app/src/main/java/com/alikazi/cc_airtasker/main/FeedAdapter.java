@@ -87,8 +87,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 listItemViewHolder.dateTextView.setText(dayTimeDateString);
 
                 break;
-                //TODO ADD COMMENTS
+                //TODO ADD MIGRATION
                 //TODO ADD DIALOG WITH DETAIL
+                //TODO FIX MAIN THREAD ISSUE
                 //TODO ADD SPLASHSCREENS
         }
     }

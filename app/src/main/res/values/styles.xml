@@ -18,4 +18,11 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="CustomDialogTitle">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
 </resources>
