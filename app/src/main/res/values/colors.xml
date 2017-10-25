@@ -6,6 +6,7 @@
     <color name="color_list_divider">#E0E0E0</color>
     <color name="color_task_open">#C8E6C9</color>
     <color name="color_task_assigned">#FFCDD2</color>
+    <color name="color_task_open_list_marker">#64DD17</color>
     <color name="color_rating_star">#FFC107</color>
     <color name="color_transparent">#00000000</color>
 </resources>

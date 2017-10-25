@@ -19,8 +19,9 @@ public class RatingAdapter extends BaseAdapter {
     private Context mContext;
     private int mRating;
 
-    public RatingAdapter(Context context) {
+    public RatingAdapter(Context context, int rating) {
         mContext = context;
+        mRating = rating;
     }
 
     public void setRating(int rating) {

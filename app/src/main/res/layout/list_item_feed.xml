@@ -27,7 +27,7 @@
         <GridView
             android:id="@+id/list_item_feed_rating_grid_view"
             android:layout_width="80dp"
-            android:layout_height="20dp"
+            android:layout_height="16dp"
             android:layout_below="@+id/list_item_feed_profile_photo"
             android:numColumns="5"
             android:scrollbars="none"
@@ -60,6 +60,17 @@
             android:layout_alignParentRight="true"
             android:layout_alignBottom="@+id/list_item_feed_profile_photo"
             tools:text="comment"/>
+
+        <ImageView
+            android:id="@+id/list_item_feed_task_open_marker"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:tint="@color/color_task_open_list_marker"
+            android:src="@mipmap/ic_radio_button_checked_black_24dp"
+            android:contentDescription="@string/default_image_content_description"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

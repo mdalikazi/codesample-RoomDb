@@ -37,11 +37,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Activity mActivityContext;
     private boolean mAnimate;
     private ArrayList<FeedWithTaskAndProfile> mFeedList;
-    private RatingAdapter mRatingAdapter;
 
     public FeedAdapter(Activity activityContext) {
         mActivityContext = activityContext;
-        mRatingAdapter = new RatingAdapter(activityContext);
     }
 
     public void setFeedList(ArrayList<FeedWithTaskAndProfile> feedList) {
@@ -69,7 +67,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         animateList(holder.itemView);
         int adapterPostion = holder.getAdapterPosition();
-        // Such a switch is useful to have different view types in the adapter.
+        // A switch case is useful to have different view types in the adapter.
         // In our case we have only one view type
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_ITEM:
@@ -104,10 +102,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
                 });
 
-                if (mRatingAdapter != null) {
-                    mRatingAdapter.setRating(rating);
-                    listItemViewHolder.ratingGridView.setAdapter(mRatingAdapter);
-                }
+                listItemViewHolder.ratingGridView.setAdapter(new RatingAdapter(mActivityContext, rating));
+                listItemViewHolder.taskOpenMarkerImageView.setVisibility(!assigned ? View.VISIBLE : View.GONE);
 
                 break;
                 //TODO ADD SPLASHSCREENS
@@ -164,6 +160,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private class FeedListItemViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView profilePhotoImageView;
+        private ImageView taskOpenMarkerImageView;
         private TextView taskNameTextView;
         private TextView dateTextView;
         private TextView feedTypeTextView;
@@ -172,6 +169,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public FeedListItemViewHolder(View itemView) {
             super(itemView);
             profilePhotoImageView = itemView.findViewById(R.id.list_item_feed_profile_photo);
+            taskOpenMarkerImageView = itemView.findViewById(R.id.list_item_feed_task_open_marker);
             taskNameTextView = itemView.findViewById(R.id.list_item_feed_task_name);
             dateTextView = itemView.findViewById(R.id.list_item_feed_date);
             feedTypeTextView = itemView.findViewById(R.id.list_item_feed_type);

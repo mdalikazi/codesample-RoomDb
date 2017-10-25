@@ -68,8 +68,7 @@ public class DetailsDialogFragment extends DialogFragment {
                 .load(getArguments().getString(BUNDLE_EXTRA_PROFILE_PHOTO))
                 .into(profilePhoto);
 
-        RatingAdapter ratingAdapter = new RatingAdapter(getActivity());
-        ratingAdapter.setRating(getArguments().getInt(BUNDLE_EXTRA_RATING));
+        RatingAdapter ratingAdapter = new RatingAdapter(getActivity(), getArguments().getInt(BUNDLE_EXTRA_RATING));
         ratingGridView.setAdapter(ratingAdapter);
 
         builder.setView(detailView);
