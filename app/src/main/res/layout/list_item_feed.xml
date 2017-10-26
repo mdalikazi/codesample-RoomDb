@@ -15,8 +15,8 @@
 
         <ImageView
             android:id="@+id/list_item_feed_profile_photo"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             android:adjustViewBounds="true"
@@ -26,8 +26,9 @@
 
         <GridView
             android:id="@+id/list_item_feed_rating_grid_view"
-            android:layout_width="80dp"
+            android:layout_width="70dp"
             android:layout_height="16dp"
+            android:paddingTop="2dp"
             android:layout_below="@+id/list_item_feed_profile_photo"
             android:numColumns="5"
             android:scrollbars="none"
@@ -49,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/list_item_feed_profile_photo"
             android:layout_toRightOf="@+id/list_item_feed_profile_photo"
-            android:layout_alignBottom="@+id/list_item_feed_profile_photo"
+            android:layout_alignBottom="@+id/list_item_feed_rating_grid_view"
             tools:text="Mar 10"/>
 
         <TextView
@@ -58,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignBottom="@+id/list_item_feed_profile_photo"
+            android:layout_alignBottom="@+id/list_item_feed_rating_grid_view"
             tools:text="comment"/>
 
         <ImageView
