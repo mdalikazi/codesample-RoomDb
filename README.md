@@ -1,34 +1,27 @@
 # README #
 
 ### What is this repository for? ###
-
-* App name
-    - cc-airtasker = Code Challenge - Airtasker
+A sample app based on coding challenge that uses Room DB.
 
 * Versions
     - v1.0 = No database
-    - v2.0 = Room database (albeit, in-memory database)
+    - v2.0 = Room database (in-memory database)
+    
+* Libraries used
+
+    - Glide (https://github.com/bumptech/glide)  
+    I used Glide to load and display images because it is efficient. It loads images lazily which is good for app performance.
+    
+    - Gson (https://github.com/google/gson)  
+    The go-to library to consume or create JSON.
 
 ### How do I get set up? ###
 
-* Summary of set up
-	- If you run into trouble with compiling gradle, try setting `versionCode = 1`
-
-        (`def commitCount` in gradle needs git to be added to PATH)
-
-* Database configuration
-	- Currently Room database is in-memory. I need to do more research on how to access disk database safely off main thread with Executors
-
-### Contribution guidelines ###
-
-* Git flow
-	- Please take a look at my git flow. I have left all the branches alive.
+* If you have trouble compiling, try setting `versionCode = 1` in `app.gradle`
 
 ### Who do I talk to? ###
 
 * Repo owner or admin
-    - Ali Kazi
-    - mdalikazi@gmail.com
-    - 0401553443
+    - Ali Kazi  
+    - mdalikazi@gmail.com  
     - [LinkedIn](linkedin.com/in/mdalikazi)
-    - [Github](github.com/mdalikazi)
