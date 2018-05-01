@@ -30,7 +30,7 @@ import java.util.Locale;
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
+    private static final String LOG_TAG = AppConf.LOG_TAG_ALI_KAZI;
 
     private static final int VIEW_TYPE_ITEM = 0;
 

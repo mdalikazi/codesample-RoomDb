@@ -16,7 +16,7 @@ import static com.alikazi.cc_airtasker.db.DbHelper.addTask;
 
 public class FakeDataDb {
 
-    private static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
+    private static final String LOG_TAG = AppConf.LOG_TAG_ALI_KAZI;
 
     public static void initDbFakeDataAsync(final AppDatabase db, FakeDbCallbacksListener fakeDbCallbacksListener) {
         PopulateDbFakeDataAsync populateDbAsync = new PopulateDbFakeDataAsync(db, fakeDbCallbacksListener);

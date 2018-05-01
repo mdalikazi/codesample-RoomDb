@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity
         NetworkProcessor.ProfileRequestListener,
         FakeDataDb.FakeDbCallbacksListener {
 
-    private static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
+    private static final String LOG_TAG = AppConf.LOG_TAG_ALI_KAZI;
 
     private static final boolean SIMULATE_SLOW_INTERNET = false;
 
@@ -386,8 +386,8 @@ public class MainActivity extends AppCompatActivity
             // Convert mini url of profile photo to full url
             Uri.Builder uriBuilder = new Uri.Builder()
                     .scheme(NetConstants.SCHEME_HTTPS)
-                    .authority(NetConstants.STAGE_AIRTASKER)
-                    .appendPath(NetConstants.ANDROID_CODE_TEST);
+                    .authority(NetConstants.MOCKABLE_IO)
+                    .appendPath(NetConstants.ROOM_DB);
             feedWithTaskAndProfile.profiles.get(0).avatarFullUrl = uriBuilder.build().toString() +
                             feedWithTaskAndProfile.profiles.get(0).avatar_mini_url;
         }

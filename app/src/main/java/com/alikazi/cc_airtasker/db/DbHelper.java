@@ -11,7 +11,7 @@ import com.alikazi.cc_airtasker.db.entities.TaskEntity;
 
 public class DbHelper {
 
-    private static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
+    private static final String LOG_TAG = AppConf.LOG_TAG_ALI_KAZI;
 
     public static void initDbAsync(final AppDatabase db) {
 

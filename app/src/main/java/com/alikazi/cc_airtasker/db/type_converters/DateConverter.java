@@ -15,7 +15,7 @@ import java.util.Locale;
 
 public class DateConverter {
 
-    private static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
+    private static final String LOG_TAG = AppConf.LOG_TAG_ALI_KAZI;
 
     @TypeConverter
     public static Date fromString(String isoDate) {

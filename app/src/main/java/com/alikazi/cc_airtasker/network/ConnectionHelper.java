@@ -15,7 +15,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class ConnectionHelper {
 
-    public static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
+    public static final String LOG_TAG = AppConf.LOG_TAG_ALI_KAZI;
 
     private HttpsURLConnection mHttpsURLConnection;
 

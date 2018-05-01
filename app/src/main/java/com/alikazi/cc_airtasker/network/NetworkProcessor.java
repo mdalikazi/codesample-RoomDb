@@ -31,7 +31,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class NetworkProcessor {
 
-    private static final String LOG_TAG = AppConf.LOG_TAG_CC_AIRTASKER;
+    private static final String LOG_TAG = AppConf.LOG_TAG_ALI_KAZI;
 
     private Context mContext;
     private AppDatabase mDatabaseInstance;
@@ -140,7 +140,6 @@ public class NetworkProcessor {
             @Override
             protected Boolean doInBackground(Void... voids) {
                 Log.i(LOG_TAG, "getTasks doInBackground");
-//                ArrayList<Task> tasks = new ArrayList<>();
                 ConnectionHelper connectionHelper = new ConnectionHelper();
                 try {
                     for (URL taskUrl : tasksUrlList) {

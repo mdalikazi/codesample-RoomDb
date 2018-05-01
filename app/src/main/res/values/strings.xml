@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CodeTest - Ali Kazi</string>
+    <string name="app_name">>Ali Kazi - RoomDB App</string>
 
     <string name="id_json">%1$d.json</string>
     <string name="main_empty_list_message_default">Tap the "\"HTTP"\" button to get started.</string>
