@@ -23,5 +23,4 @@ A sample app based on coding challenge that uses Room DB.
 
 * Repo owner or admin
     - Ali Kazi  
-    - mdalikazi@gmail.com  
     - [LinkedIn](linkedin.com/in/mdalikazi)
