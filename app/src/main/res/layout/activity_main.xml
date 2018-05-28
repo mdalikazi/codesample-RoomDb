@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.alikazi.cc_airtasker.main.MainActivity">
+    tools:context="com.alikazi.codesample_roomdb.main.MainActivity">
 
     <include layout="@layout/content_main" />
 
